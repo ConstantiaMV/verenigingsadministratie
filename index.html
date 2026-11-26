@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="nl"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://*.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verenigingsadministratie - Muziekvereniging Constantia</title>
+<style>
+:root{--b:#1f3fb5;--n:#2b3470;--bg:#f4f6fb;--l:#d9deee}
+*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:var(--bg);color:#1b1f33}
+.login{max-width:380px;margin:5vh auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 12px #0002;text-align:center}
+.login img{width:190px}.login label{text-align:left;margin-top:10px}.err{color:#b3261e;min-height:1em}
+input,select,textarea,button{font:inherit;padding:8px 10px;border:1px solid #b9c0d9;border-radius:6px;width:100%}
+input[type=checkbox]{width:auto}
+button{width:auto;background:var(--b);color:#fff;border:0;cursor:pointer}button.s{background:#fff;color:var(--b);border:1px solid var(--b)}button.d{background:#b3261e}
+.nt{font-size:12px;font-weight:700;letter-spacing:.03em;text-align:center;margin:12px 0 8px}nav img{cursor:pointer}.wel{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;text-align:center}.wel h1{font:400 clamp(44px,7vw,84px) system-ui,sans-serif;margin:0;color:#000}.wel img{width:min(300px,60vw);border-radius:50%;background:#fff}.wel p{font-style:italic;text-transform:uppercase;font-size:17px;margin:0}.shell{display:flex;min-height:100vh}nav{width:230px;background:var(--n);color:#fff;padding:14px;flex:none}
+nav img{width:100%;background:#fff;border-radius:50%}nav a{display:block;padding:9px 10px;color:#fff;border-radius:6px;cursor:pointer;margin-top:4px}nav a.on,nav a:hover{background:#ffffff26}
+main{flex:1;padding:20px;min-width:0;overflow-x:auto}h1{margin:0 8px 0 0;font-size:22px;color:var(--n)}
+table{border-collapse:collapse;width:100%;background:#fff}th,td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--l)}th{color:var(--n)}
+tr.c{cursor:pointer}tr.c:hover{background:#eef1fb}
+.bar{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap;align-items:center}.bar input,.bar select{width:auto;flex:1;min-width:130px}
+dialog{border:0;border-radius:12px;padding:20px;width:min(680px,96vw)}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.full{grid-column:1/-1}
+label,.lb{font-size:13px;color:#444;display:block}.hr{display:flex;gap:6px;margin-top:4px}.sm{font-size:12px;color:#666}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--b);color:#fff;padding:10px 14px;border-radius:8px;z-index:99}.toast.bad{background:#b3261e}
+.rep{background:#fff;padding:12px;color:#000;font-size:11px}.rep table{width:100%}.rep th,.rep td{padding:3px 6px;white-space:nowrap;font-size:11px}.rep h2{font-size:14px;margin:6px 0}.rep .rt{font-size:18px}.hd{display:flex;align-items:center;gap:14px}.hd img{width:80px}.rt{font-family:Georgia,serif;letter-spacing:.06em;text-align:center;margin:0}
+.rs{color:#0a7b83}.gh td{background:#ccc9c0;font-weight:600}.gh.jb td{background:#f2dc8b}.dn td{border-bottom:0}.dn .c,.dn .ch th{text-align:center}.dn .ch th{font-weight:400;font-size:10px;border:0}.dn .st{font-size:14px;font-weight:700;padding-top:10px;border-bottom:1px dotted #000}.bx{display:inline-block;width:12px;height:12px;border:1px solid #000;vertical-align:middle;line-height:11px;font-size:11px;text-align:center}.bx.k::after{content:'X';font-weight:700}.ft .bx{border-color:#1f3fb5}.dn .rt{color:#1f3fb5}.dn .h{padding:3px 1px}.mt{border-collapse:collapse}.mt td,.mt th{padding:4px 6px;border:0;background:none;white-space:normal;text-align:left;vertical-align:top}.mt th{font-weight:700;padding-bottom:10px}.mt .mh td{padding:0 0 12px}.mt h1{margin:0;font:400 20px system-ui,sans-serif;color:#000}.mt .sp td{height:16px;padding:0}.mt .mg td{border-top:1px solid #000;border-bottom:1px solid #000;padding:5px 2px;font-size:13px}.mt td.t{padding-left:24px}.mz{page:muz}@page muz{margin:12mm;@top-right{content:'Pagina ' counter(page) ' van ' counter(pages);font:11px sans-serif}}dialog p.bar{margin-top:28px}summary{font-size:17px;font-weight:600;color:var(--n);cursor:pointer;margin:16px 0 8px}details{border-top:1px solid var(--l)}
+@page{margin:12mm}
+.fs{display:none}.ft{margin-top:14px;font-size:11px}.fl{border-top:1px solid #1f3fb5;margin-bottom:3px}.ftt{margin-bottom:6px}
+.fg{display:grid;grid-template-columns:3fr 3fr 50px 80px 40px 40px;gap:6px;align-items:end}.fh span,.fh b{text-align:left}.fh b{font-size:16px;text-align:center}.fh .bw{grid-column:span 2;text-align:center}.fh .w{text-align:center}
+.fr{height:9mm}.fr i{display:block;border-bottom:1px dotted #1f3fb5;height:1px}.fr .bx{justify-self:center;width:16px;height:16px;line-height:15px;font-size:14px}
+#rep iframe{width:100%;height:78vh;border:1px solid #bbb;background:#888}
+@media(max-width:700px){.shell{display:block}nav{width:auto}}
+@media print{.fs{display:block;height:44mm}.ft{position:fixed;bottom:0;left:0;right:0;height:42mm;margin:0;background:#fff}main{overflow:visible}tr{page-break-inside:avoid}nav,.noprint{display:none!important}body{background:#fff}main{padding:0}.rep{padding:0}.pb{page-break-before:always}}
+</style></head><body><div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+if(top!==self){document.body.innerHTML='';throw new Error('Niet toegestaan in een frame')}
+// ===== CONFIGURATIE: vul in vanuit Supabase > Project Settings > API =====
+const CFG={url:'https://ixybybmolnkqkdabyxcj.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4eWJ5Ym1vbG5rcWtkYWJ5eGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3Mzg2MzcsImV4cCI6MjEwODMxNDYzN30.AUyljK5NrduOZHhkdfexUjHA5Lad2nm1QqDp7QSFlD8'};
+const NAAM='Muziekvereniging Constantia, Werkhoven';
+const OK=!CFG.url.includes('JOUW'),sb=OK?supabase.createClient(CFG.url,CFG.key,{auth:{storage:window.sessionStorage}}):null;
+const $=s=>document.querySelector(s),app=$('#app');let main,me={email:'',rechten:[]};
+const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fd=d=>d?d.split('-').reverse().join('-'):'';
+const today=()=>new Date().toLocaleDateString('nl-NL',{day:'2-digit',month:'2-digit',year:'numeric'});
+const q=async p=>{const{data,error}=await p;if(error)throw error;return data};
+const by=(a,b)=>(a.achternaam||'').localeCompare(b.achternaam||'','nl')||(a.voornaam||'').localeCompare(b.voornaam||'','nl');
+const PW=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/;
+const can=r=>me.rechten.includes(r)||me.rechten.includes('beheer');
+const allowed=r=>r=='rap'?can('leden')||can('donateurs')||can('muziek'):can(r);
+function toast(m,bad){const t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.textContent=m;(document.querySelector('dialog[open]')||document.body).append(t);setTimeout(()=>t.remove(),3500)}
+const YR=new Date().getFullYear();
+const hr=r=>{const y=r.jaar??YR;let o='';for(let i=Math.min(1995,y);i<=Math.max(YR,y);i++)o+=`<option ${i==y?'selected':''}>${i}</option>`;return `<div class=hr data-bw="${e(r.betaalwijze||'')}"><select>${o}</select><input type=number step=any placeholder="Bedrag €" value="${r.bedrag??''}"></div>`};
+
+let idleT;const idle=()=>{clearTimeout(idleT);idleT=setTimeout(async()=>{if(!$('nav'))return;await sb.auth.signOut();login('Je bent automatisch uitgelogd na 30 minuten zonder activiteit.')},18e5)};
+['click','keydown','touchstart','mousemove'].forEach(v=>addEventListener(v,idle,{passive:true}));
+// ===== Inloggen =====
+function login(msg='',first=false){
+ app.innerHTML=`<form class=login><img src=logo.png alt="${NAAM}"><h2>${first?'Wachtwoord aanmaken':'Inloggen'}</h2><p class=err>${e(msg)}</p>
+ <label>E-mailadres (inlognaam)<input id=em type=email required autocomplete=username></label>
+ <label>Wachtwoord<input id=pw type=password required autocomplete="${first?'new-password':'current-password'}"></label>
+ ${first?`<label>Herhaal wachtwoord<input id=p2 type=password required></label><p class=sm>Minimaal 12 tekens met kleine letters, hoofdletters, cijfers en speciale tekens.</p>`:''}
+ <p><button>${first?'Account activeren':'Inloggen'}</button></p><a href=# id=sw>${first?'Terug naar inloggen':'Eerste keer of wachtwoord gereset? Maak een wachtwoord aan'}</a></form>`;
+ $('#sw').onclick=ev=>{ev.preventDefault();login('',!first)};
+ $('form').onsubmit=async ev=>{ev.preventDefault();const email=$('#em').value.trim().toLowerCase(),pw=$('#pw').value;
+  try{
+   if(first){
+    if(pw!=$('#p2').value)throw Error('Wachtwoorden komen niet overeen.');
+    if(!PW.test(pw))throw Error('Wachtwoord te zwak: minimaal 12 tekens met klein, hoofdletter, cijfer en speciaal teken.');
+    const{data,error}=await sb.auth.signUp({email,password:pw});if(error)throw error;
+    if(!data.session)return login('Bevestig eerst je account via de e-mail die je ontvangt en log daarna in.');
+    return boot(email)}
+   const{data,error}=await sb.auth.signInWithPassword({email,password:pw});if(error)throw error;boot(data.user.email)
+  }catch(er){const m=er.message||'';login(m.includes('Invalid login')?'Onjuist e-mailadres of wachtwoord.':m.includes('already')?'Dit account bestaat al. Log in, of vraag de beheerder om een reset.':m.includes('Database error')?'Dit e-mailadres kan niet worden geactiveerd. Controleer het adres of neem contact op met de beheerder.':m,first)}}}
+
+// ===== Shell + menu =====
+const M=[['leden','Leden','leden',()=>vLeden()],['don','Donateurs','donateurs',()=>vDon()],['mus','Muziekbibliotheek','muziek',()=>vMus()],['rap','Rapporten','rap',()=>vRap()],['beh','Beheer','beheer',()=>vBeheer()]];
+async function boot(email){
+ try{
+  if(!await q(sb.rpc('is_lid_email',{p_email:email}))){await sb.auth.signOut();return login('Dit e-mailadres komt niet (meer) voor in de ledenadministratie.')}
+  const r=await q(sb.from('rechten').select('rechten').eq('email',email.toLowerCase()).maybeSingle());
+  me={email,rechten:r?.rechten||[]};
+ }catch(er){return login(er.message)}
+ const menu=M.filter(m=>allowed(m[2]));
+ app.innerHTML=`<div class=shell><nav class=noprint><img src=logo.png alt=""><p class=nt>VERENIGINGSADMINISTRATIE</p>${menu.map(m=>`<a data-i=${m[0]}>${m[1]}</a>`).join('')}<p class=sm style="color:#ccd">${e(email)}</p><a id=out>Uitloggen</a></nav><main></main></div>`;
+ main=$('main');
+ const go=id=>{document.querySelectorAll('nav a[data-i]').forEach(a=>a.classList.toggle('on',a.dataset.i==id));M.find(m=>m[0]==id)[3]().catch(er=>toast(er.message,1))};
+ document.querySelectorAll('nav a[data-i]').forEach(a=>a.onclick=()=>go(a.dataset.i));
+ $('#out').onclick=async()=>{await sb.auth.signOut();login()};
+ const wel=()=>{document.querySelectorAll('nav a[data-i]').forEach(a=>a.classList.remove('on'));main.innerHTML=menu.length?'<div class=wel><h1>WELKOM</h1><img src=logo.png alt="Muziekvereniging Constantia Werkhoven"><p>Maak uw keuze in het menu links</p></div>':'<h1>Geen rechten</h1><p>Je account heeft nog geen rechten. Vraag het bestuur om toegang.</p>'};
+ $('nav img').onclick=wel;wel();
+}
+
+// ===== Generieke formulier- en lijstfuncties =====
+function form(title,F,v,save,del,msg){
+ const d=document.createElement('dialog');
+ const h=F.map(([k,l,t,o,hn])=>{const x=v[k]??'',r=l.endsWith('*')?'required':'';let i;
+  if(t=='sel')i=`<select name="${k}" ${r}><option></option>${o.map(s=>`<option ${s==x?'selected':''}>${e(s)}</option>`).join('')}</select>`;
+  else if(t=='multi')i=`<select name="${k}" multiple size=5>${o.map(([a,b])=>`<option value="${a}" ${(x||[]).includes(a)?'selected':''}>${e(b)}</option>`).join('')}</select>`;
+  else if(t=='area')i=`<textarea name="${k}" rows=3>${e(x)}</textarea>`;
+  else if(t=='bool')i=`<input type=checkbox name="${k}" ${x?'checked':''}>`;
+  else if(t=='ro')i=`<input name="${k}" value="${e(x)}" readonly>`;
+  else if(t=='chk')i=o.map(s=>`<span style="margin-right:14px"><input type=checkbox name="${k}" value="${e(s)}" ${(x||[]).includes(s)?'checked':''}> ${e(s)}</span>`).join('');
+  else if(t=='hist')i=`<div class=hist data-k="${k}">${(x||[]).map(hr).join('')}</div><button type=button class=s onclick="this.previousElementSibling.insertAdjacentHTML('beforeend',hr({}))">+ Jaar toevoegen</button>`;
+  else i=`<input name="${k}" type="${t}" value="${e(x)}" ${t=='number'?'step=any':''} ${r}>`;
+  const tg=['hist','chk'].includes(t)?'div':'label';
+  return `<${tg} class="lb ${['hist','area','multi','chk'].includes(t)?'full':''}">${e(l.replace(/\*$/,''))}${r?' *':''}${i}${hn?`<span class=sm>${e(hn)}</span>`:''}</${tg}>`}).join('');
+ d.innerHTML=`<form><h2>${title}</h2><div class=g>${h}</div><p class=bar><button>Opslaan</button><button type=button class=s id=x>Annuleren</button>${del?'<button type=button class=d id=del>Verwijderen</button>':''}</p></form>`;
+ document.body.append(d);d.showModal();
+ d.querySelector('#x').onclick=()=>d.remove();
+ const ac=d.querySelector('[name=actief]'),us=d.querySelector('[name=uitschrijfdatum]');
+ if(ac&&us){const w=us.closest('label'),f=()=>{w.style.display=ac.checked?'none':'';us.required=!ac.checked};ac.onchange=f;f()}
+ if(del)d.querySelector('#del').onclick=async()=>{if(!confirm(msg||'Weet je zeker dat je dit wilt verwijderen?'))return;try{await del();d.remove()}catch(er){toast(er.message,1)}};
+ d.querySelector('form').onsubmit=async ev=>{ev.preventDefault();const o={};
+  F.forEach(([k,,t])=>{
+   if(t=='hist'){o[k]=[...d.querySelector(`.hist[data-k="${k}"]`).children].map(r=>{const[a,b]=r.querySelectorAll('select,input');return b.value===''?null:{jaar:+a.value,bedrag:+b.value,betaalwijze:r.dataset.bw||null}}).filter(Boolean);return}
+   if(t=='chk'){o[k]=[...d.querySelectorAll(`input[name="${k}"]:checked`)].map(x=>x.value);return}
+   const el=d.querySelector(`[name="${k}"]`);
+   if(t=='ro')return;if(t=='bool')o[k]=el.checked;else if(t=='multi')o[k]=[...el.selectedOptions].map(x=>+x.value);
+   else{o[k]=el.value.trim()||null;if(t=='number'&&o[k]!=null)o[k]=+o[k]}});
+  try{await save(o);d.remove();toast('Opgeslagen')}catch(er){toast(er.message,1)}};
+}
+function list(rows,cols,fn){
+ const s=main.querySelector('input.q'),t=main.querySelector('.tb');
+ const draw=()=>{const f=s.value.toLowerCase(),R=rows.filter(r=>JSON.stringify(Object.values(r)).toLowerCase().includes(f));
+  t.innerHTML=`<table><tr>${cols.map(c=>`<th>${c[0]}`).join('')}</tr>${R.map(r=>`<tr class=c>${cols.map(c=>`<td>${e(c[1](r))}`).join('')}`).join('')}</table>`;
+  t.querySelectorAll('tr.c').forEach((tr,i)=>tr.onclick=()=>fn(R[i]))};
+ s.oninput=draw;draw()}
+const head=(t,n)=>`<div class=bar><h1>${t}</h1><input class=q placeholder="Zoeken..."><button id=n>${n}</button></div><div class=tb></div>`;
+
+// ===== Leden =====
+async function vLeden(){
+ const L=await q(sb.from('leden').select('*').order('achternaam'));
+ const G=(await q(sb.from('groepen').select('naam').order('naam'))).map(x=>x.naam);
+ const F=[['lidnr','Lidnr.','ro'],['voornaam','Voornaam*','text'],['achternaam','Achternaam*','text'],['email','E-mailadres (inlognaam)*','email'],['adres','Adres','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['telefoon','Telefoonnummer','tel'],['geboortedatum','Geboortedatum','date'],['lid_sinds','Lid sinds','date'],['instrument','Instrument','text'],['sectie','Sectie','text'],['docent','Docent','text'],['groepen','Groepen','chk',G],['actief','Ingeschreven','bool'],['uitschrijfdatum','Uitschrijving van kracht per','date']];
+ const next=Math.max(0,...L.map(x=>x.lidnr))+1;
+ const open=r=>form(r?'Lid bewerken':'Nieuw lid',F,r||{lidnr:next,actief:true,groepen:[]},async o=>{if(o.actief)o.uitschrijfdatum=null;r?await q(sb.from('leden').update(o).eq('lidnr',r.lidnr)):await q(sb.from('leden').insert(o));vLeden()});
+ main.innerHTML=head('Leden','Nieuw lid');$('#n').onclick=()=>open();
+ list(L,[['Lidnr.',r=>r.lidnr],['Naam',r=>r.achternaam+', '+r.voornaam],['Instrument',r=>r.instrument],['Groepen',r=>(r.groepen||[]).join(', ')],['Lid sinds',r=>fd(r.lid_sinds)],['Status',r=>r.actief?'Ingeschreven':'Uitgeschreven per '+fd(r.uitschrijfdatum)]],open);
+}
+
+// ===== Donateurs =====
+async function vDon(){
+ const[D,H,L,WR]=await Promise.all([q(sb.from('donateurs').select('*').order('wijknr').order('adres').order('huisnr')),q(sb.from('donatie_historie').select('*').order('jaar',{ascending:false})),q(sb.rpc('lidnamen')),q(sb.from('wijken').select('*'))]);
+ const WK=Object.fromEntries(WR.map(x=>[x.wijknr,x.wijkloper])),W=WR.map(x=>x.wijknr).sort((a,b)=>String(a).localeCompare(String(b),'nl',{numeric:true}));
+ const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam]));
+ const F=[['naam1','Naamregel 1*','text'],['naam2','Naamregel 2','text'],['adres','Adres*','text'],['huisnr','Huisnummer*','number'],['toevoeging','Toevoeging huisnummer','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['bijdrage','Donateursbijdrage (€)','number',null,'Leeg laten = geen donateur op dit adres'],['wijknr','Wijknummer*','sel',W,'Wijken en wijklopers beheer je onder Beheer'],['mededelingen','Mededelingen','area'],['hist','Historie: betaalde bijdrage per jaar','hist']];
+ const open=r=>form(r?'Donateur bewerken':'Nieuwe donateur',F,r?{...r,hist:H.filter(h=>h.donateur_id==r.id)}:{hist:[],bijdrage:10},async o=>{
+  const h=o.hist;delete o.hist;let id=r?.id;
+  if(r)await q(sb.from('donateurs').update(o).eq('id',id));else id=(await q(sb.from('donateurs').insert(o).select('id').single())).id;
+  await q(sb.from('donatie_historie').delete().eq('donateur_id',id));
+  if(h.length)await q(sb.from('donatie_historie').insert(h.map(x=>({donateur_id:id,jaar:x.jaar,bedrag:x.bedrag,betaalwijze:x.betaalwijze}))));
+  vDon()},r&&(async()=>{await q(sb.from('donateurs').delete().eq('id',r.id));vDon()}),'Let op: ook de volledige historie van deze donateur wordt verwijderd. Is de donateur gestopt? Maak dan het veld Donateursbijdrage leeg, dan blijft de historie bewaard. Toch verwijderen?');
+ main.innerHTML=head('Donateurs','Nieuwe donateur');$('#n').onclick=()=>open();
+ list(D,[['Wijk',r=>r.wijknr],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Bijdrage',r=>r.bijdrage>0?'€ '+Number(r.bijdrage).toFixed(2):'geen donateur'],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
+}
+
+// ===== Historie verwerken =====
+const dcmp=(a,b)=>{const p=n=>(n||0)%2?1:0;return (a.adres||'').localeCompare(b.adres||'','nl')||p(a.huisnr)-p(b.huisnr)||(a.huisnr||0)-(b.huisnr||0)||(a.toevoeging||'').localeCompare(b.toevoeging||'','nl')};
+async function vHist(){
+ const D0=await q(sb.from('donateurs').select('wijknr'));
+ const W=[...new Set(D0.map(d=>d.wijknr).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'nl',{numeric:true}));
+ let ys='';for(let y=YR;y>=1995;y--)ys+=`<option>${y}</option>`;
+ $('#hv').innerHTML=`<div class=bar><select id=hy>${ys}</select><select id=hw><option value="">Alle wijken</option>${W.map(w=>`<option>${e(w)}</option>`).join('')}</select><button id=ht>Tonen</button></div><p class=sm>Vink de donateurs aan die betaald hebben en pas zo nodig het bedrag aan. Alleen aangevinkte donateurs worden naar de historie weggeschreven. Adressen zonder donateursbijdrage staan hier niet bij.</p><div id=hb></div>`;
+ $('#ht').onclick=async()=>{try{const Y=+$('#hy').value,w=$('#hw').value;
+  const[D,H]=await Promise.all([q(sb.from('donateurs').select('*')),q(sb.from('donatie_historie').select('*').eq('jaar',Y))]);
+  const hm=Object.fromEntries(H.map(x=>[x.donateur_id,x]));
+  const R=D.filter(d=>d.bijdrage>0&&(!w||d.wijknr==w)).sort((a,b)=>String(a.wijknr).localeCompare(String(b.wijknr),'nl',{numeric:true})||dcmp(a,b));
+  $('#hb').innerHTML=R.length?`<div class=bar><button id=ha class=s>Alles aanvinken</button><button id=hs>Opslaan in historie ${Y}</button></div><table><tr><th>Betaald<th>Wijk<th>Adres<th>Naam<th>Bedrag (€)</tr>${R.map(d=>{const x=hm[d.id];return `<tr data-id=${d.id}><td><input type=checkbox class=ck ${x?'checked':''}><td>${e(d.wijknr)}<td>${e(d.adres)} ${d.huisnr??''}${e(d.toevoeging)}<td>${e(d.naam1)}<td><input type=number step=any class=bd style="width:90px" value="${x?x.bedrag:d.bijdrage}">`}).join('')}</table>`:'<p>Geen donateurs gevonden.</p>';
+  if(!R.length)return;
+  $('#ha').onclick=()=>$('#hv').querySelectorAll('.ck').forEach(c=>c.checked=true);
+  $('#hs').onclick=async()=>{try{const up=[],del=[];
+   $('#hv').querySelectorAll('tr[data-id]').forEach(r=>{const id=+r.dataset.id,b=r.querySelector('.bd').value;
+    if(r.querySelector('.ck').checked){if(b==='')throw Error('Vul een bedrag in bij '+r.children[3].textContent);up.push({donateur_id:id,jaar:Y,bedrag:+b})}
+    else if(hm[id])del.push(id)});
+   if(up.length)await q(sb.from('donatie_historie').upsert(up,{onConflict:'donateur_id,jaar'}));
+   if(del.length)await q(sb.from('donatie_historie').delete().eq('jaar',Y).in('donateur_id',del));
+   toast(`${up.length} donateurs weggeschreven naar historie ${Y}`)}catch(er){toast(er.message,1)}};
+ }catch(er){toast(er.message,1)}};
+}
+
+// ===== Muziekbibliotheek =====
+const pad=n=>String(n).padStart(4,'0');
+async function uitgBeheer(done){
+ const d=document.createElement('dialog');document.body.append(d);
+ const F=[['naam','Naam uitgeverij*','text'],['adres','Adres','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['telefoon','Telefoonnummer','tel'],['email','E-mailadres','email'],['contactpersoon','Contactpersoon','text'],['opmerkingen','Opmerkingen','area']];
+ const draw=async()=>{
+  const U=await q(sb.from('uitgeverijen').select('*').order('naam'));
+  const ed=r=>form(r?'Uitgeverij bewerken':'Nieuwe uitgeverij',F,r||{},async o=>{r?await q(sb.from('uitgeverijen').update(o).eq('id',r.id)):await q(sb.from('uitgeverijen').insert(o));draw()},r&&(async()=>{await q(sb.from('uitgeverijen').delete().eq('id',r.id));draw()}),'Uitgeverij verwijderen? Dit kan alleen als er geen muziekwerken aan gekoppeld zijn.');
+  d.innerHTML=`<h2>Uitgeverijen</h2><table><tr><th>Naam<th>Plaats<th>Telefoon<th>Contactpersoon</tr>${U.map(u=>`<tr class=c><td>${e(u.naam)}<td>${e(u.woonplaats)}<td>${e(u.telefoon)}<td>${e(u.contactpersoon)}`).join('')}</table><p class=bar><button id=un>Nieuwe uitgeverij</button><button class=s id=uc>Sluiten</button></p>`;
+  d.querySelectorAll('tr.c').forEach((tr,i)=>tr.onclick=()=>ed(U[i]));
+  d.querySelector('#un').onclick=()=>ed();
+  d.querySelector('#uc').onclick=()=>{d.remove();done&&done()}};
+ d.addEventListener('cancel',()=>{d.remove();done&&done()});
+ await draw();d.showModal();
+}
+async function vMus(){
+ const[R,U,G,MG]=await Promise.all([q(sb.from('muziek').select('*').order('titel')),q(sb.from('uitgeverijen').select('id,naam').order('naam')),q(sb.from('genres').select('*').order('naam')),q(sb.from('muziek_genre').select('*'))]);
+ const un=Object.fromEntries(U.map(u=>[u.id,u.naam])),gn=Object.fromEntries(G.map(g=>[g.id,g.naam])),gm={};
+ MG.forEach(x=>(gm[x.muziek_id]??=[]).push(gn[x.genre_id]));
+ const rows=R.map(m=>({...m,genres:(gm[m.id]||[]).sort(),uitgeverij:un[m.uitgeverij_id]||'',archief:pad(m.id)}));
+ const F=[['archief','Archiefnr.','ro'],['titel','Titel van het werk*','text'],['componist','Componist','text'],['arrangeur','Arrangeur','text'],['genres','Genres','chk',G.map(g=>g.naam),'Genres beheer je onder Beheer'],['uitgeverij','Uitgeverij','sel',U.map(u=>u.naam),'Uitgeverij ontbreekt? Kies "Uitgeverijen" boven de lijst.'],['bestelnr','Bestelnr.','text'],['opmerkingen','Opmerkingen','area']];
+ const open=r=>form(r?'Werk bewerken':'Nieuw werk',F,r||{genres:[],archief:'wordt automatisch toegekend'},async o=>{
+  const gs=o.genres;delete o.genres;o.uitgeverij_id=U.find(u=>u.naam==o.uitgeverij)?.id??null;delete o.uitgeverij;let id=r?.id;
+  if(r)await q(sb.from('muziek').update(o).eq('id',id));else id=(await q(sb.from('muziek').insert(o).select('id').single())).id;
+  await q(sb.from('muziek_genre').delete().eq('muziek_id',id));
+  const ids=gs.map(n=>G.find(g=>g.naam==n)?.id).filter(Boolean);
+  if(ids.length)await q(sb.from('muziek_genre').insert(ids.map(g=>({muziek_id:id,genre_id:g}))));
+  vMus()},r&&(async()=>{await q(sb.from('muziek').delete().eq('id',r.id));vMus()}));
+ main.innerHTML=head('Muziekbibliotheek','Nieuw werk');$('#n').onclick=()=>open();
+ main.querySelector('.bar').insertAdjacentHTML('beforeend','<button class=s id=ub>Uitgeverijen</button>');$('#ub').onclick=()=>uitgBeheer(vMus);
+ list(rows,[['Archiefnr.',r=>r.archief],['Titel',r=>r.titel],['Componist',r=>r.componist],['Arrangeur',r=>r.arrangeur],['Genres',r=>r.genres.join(', ')],['Uitgeverij',r=>r.uitgeverij],['Bestelnr.',r=>r.bestelnr]],open);
+}
+
+// ===== Rapporten =====
+const cur=x=>x.actief||(x.uitschrijfdatum&&x.uitschrijfdatum>new Date().toISOString().slice(0,10));
+function rLeden(L,s){
+ const R=L.filter(cur).sort(s=='n'?(a,b)=>a.lidnr-b.lidnr:by);
+ return `<h1 class=rt>${NAAM}</h1><h2 class=rs>Leden overzicht per ${today()}</h2><table><tr><th>Lidnr.<th>Achternaam<th>Voornaam<th>Geb.datum<th>Lid sinds<th>Instrument<th>Les<th>Docent</tr>${R.map(x=>`<tr><td>${x.lidnr}<td>${e(x.achternaam)}<td>${e(x.voornaam)}<td>${fd(x.geboortedatum)}<td>${fd(x.lid_sinds)}<td>${e(x.instrument)}<td>${x.docent?'☑':'☐'}<td>${e(x.docent)}`).join('')}</table>`}
+const JUB={12.5:'Bronzen speld',25:'Zilveren speld (inclusief oorkonde)',40:'Vergulde speld',50:'Vergulde speld met 1 zirkonia',60:"Vergulde speld met 2 zirkonia's",65:'Vergulde speld met 2 robijntjes',70:"Vergulde speld met 3 zirkonia's",75:'Bronzen medaille',80:'Zilveren medaille',85:'Vergulde medaille'};
+function rDuur(L,Y){
+ const g={};
+ L.filter(x=>cur(x)&&x.lid_sinds).forEach(x=>{
+  const[yy,mm]=x.lid_sinds.split('-').map(Number);
+  const j=yy+12+(mm>6?1:0)==Y?12.5:Y-yy; // 12,5 jaar lid valt in dit jaar
+  if(j>=0)(g[j]??=[]).push(x)});
+ return `<h1 class=rt>${NAAM}</h1><h2 class=rs>Lidmaatschapsduur ${Y}</h2><table><tr><th><th>Voornaam<th>Achternaam<th>Lid sinds</tr>${Object.keys(g).sort((a,b)=>a-b).map(j=>`<tr class="gh${JUB[j]?' jb':''}"><td colspan=4>${j.replace('.',',')} JAAR${JUB[j]?' — jubileum: '+JUB[j]:''}`+g[j].sort(by).map(x=>`<tr><td><td>${e(x.voornaam)}<td>${e(x.achternaam)}<td>${fd(x.lid_sinds)}`).join('')).join('')}</table>`}
+function rDon(D,H,L,wijk,Y,WK){
+ const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam])),amt={};H.forEach(h=>amt[h.donateur_id+'-'+h.jaar]=h.bedrag);
+ const par=n=>(n||0)%2?1:0,yrs=[Y-5,Y-4,Y-3,Y-2,Y-1],bx=k=>`<span class="bx${k?' k':''}"></span>`,dots='.........';
+ const euro=v=>'€ '+Number(v).toLocaleString('nl-NL',{minimumFractionDigits:2});
+ const cmp=(a,b)=>(a.adres||'').localeCompare(b.adres||'','nl')||par(a.huisnr)-par(b.huisnr)||(a.huisnr||0)-(b.huisnr||0)||(a.toevoeging||'').localeCompare(b.toevoeging||'','nl');
+ const ft=`<div class=ft><div class=fl></div><div class=ftt><b>Ruimte voor aanvullingen</b><i>: duidelijk in blokletters invullen!</i></div><div class="fg fh"><span>Naam:</span><span>Adres + huisnr.:</span><b>${Y}</b><span class=w>Waarde<br>${Y}</span><span class=bw>Betaalwijze<br>Cash&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QR</span></div>${[0,1,2].map(()=>`<div class="fg fr"><i></i><i></i>${bx()}<i></i>${bx()}${bx()}</div>`).join('')}</div>`;
+ const W={};D.filter(d=>!wijk||d.wijknr==wijk).forEach(d=>(W[d.wijknr??'-']??=[]).push(d));
+ return Object.keys(W).sort((a,b)=>a.localeCompare(b,'nl',{numeric:true})).map((w,i)=>{
+  const ds=W[w].sort(cmp),lp=(WK[w]||[]).map(n=>nm[n]).filter(Boolean).join(' / ');
+  const st={};ds.forEach(d=>(st[d.adres||'']??=[]).push(d));
+  return `<table class="dn${i?' pb':''}"><tbody><tr><td colspan=14><div class=hd><img src=logo.png alt=""><div><h1 class=rt style="text-align:left">Donateursaktie ${Y}</h1><p><b>Wijk nr.: ${e(w)}</b> &nbsp;&nbsp; <b>Uitvoerenden: ${e(lp)}</b></p></div></div>
+  <p>Eventuele aanvullingen en/of opmerkingen duidelijk in blokletters invullen!</p></td></tr>
+  ${Object.entries(st).map(([s,r])=>`<tr><td colspan=14 class=st>${e(s)}<tr class=ch><th colspan=9><th colspan=2>Afwijkende waarden<th colspan=3>Betaalwijze<tr class=ch><th style="text-align:left">Huisnr.<th style="text-align:left;width:22%">Naam<th style="text-align:left;width:22%">Vervolgnaam${yrs.map(y=>`<th class=h>${y}`).join('')}<th><b style="font-size:12px">${Y}</b><th>${Y-1}<th>${Y}<th>Cash<th>QR<th>Bank`+r.map(d=>{const v=amt[d.id+'-'+(Y-1)];return `<tr><td>${d.huisnr??''}${e(d.toevoeging)}<td>${e(d.naam1)}<td>${e(d.naam2)}${yrs.map(y=>`<td class="c h">${bx(amt[d.id+'-'+y]>0)}`).join('')}<td class=c>${bx()}<td class=c>${v!=null?euro(v):dots}<td class=c>${dots}<td class=c>${bx()}<td class=c>${bx()}<td class=c>${bx()}`}).join('')).join('')}</tbody><tfoot><tr><td colspan=14><div class=fs></div></table>`}).join('')+ft}
+function rStick(D){
+ const par=n=>(n||0)%2?1:0,tv=t=>!t?'':/^[A-Za-z]$/.test(t)?t:' '+t;
+ const cmp=(a,b)=>par(a.huisnr)-par(b.huisnr)||(a.huisnr||0)-(b.huisnr||0)||(a.toevoeging||'').localeCompare(b.toevoeging||'','nl');
+ const S={};D.forEach(d=>(S[d.adres||'']??=[]).push(d));const sheets=[];
+ Object.keys(S).sort((a,b)=>a.localeCompare(b,'nl')).forEach(s=>{
+  const c=[`<div class="st rd">${e(s)}</div>`,...S[s].sort(cmp).map(d=>`<div class=st><div>${e(d.naam1)||'&nbsp;'}</div><div>${e(d.naam2)||'&nbsp;'}</div><div>${e(d.adres)} ${d.huisnr??''}${e(tv(d.toevoeging))}</div><div>${e(d.postcode)}&nbsp;&nbsp;&nbsp;${e(d.woonplaats)}</div></div>`)];
+  for(let i=0;i<c.length;i+=21)sheets.push(c.slice(i,i+21).join(''))});
+ return `<!DOCTYPE html><meta charset=utf-8><style>@page{size:A4;margin:0}body{margin:0;background:#888;font:11pt Arial,Helvetica,sans-serif;color:#000}
+.sh{width:210mm;height:296mm;padding:15.1mm 7.2mm 0;box-sizing:border-box;display:grid;grid-template-columns:repeat(3,63.5mm);grid-auto-rows:38.1mm;column-gap:2.54mm;background:#fff;margin:8px auto;overflow:hidden;page-break-after:always}.sh:last-child{page-break-after:auto}
+.st{padding:0 3mm;overflow:hidden;display:flex;flex-direction:column;justify-content:center;line-height:1.25}.rd{color:#d00000;font-weight:700;font-size:14pt}
+@media print{body{background:#fff}.sh{margin:0}}</style>${sheets.map(c=>`<div class=sh>${c}</div>`).join('')}`}
+function rMuz(M,U,G,MG,perGenre){
+ const un=Object.fromEntries(U.map(u=>[u.id,u.naam])),gn=Object.fromEntries(G.map(g=>[g.id,g.naam])),gm={};
+ MG.forEach(x=>(gm[x.muziek_id]??=[]).push(gn[x.genre_id]));
+ const ct=(a,b)=>(a.titel||'').localeCompare(b.titel||'','nl',{sensitivity:'base'});
+ const lt=m=>{const c=(m.titel||'').trim().normalize('NFD').charAt(0).toUpperCase();return /[A-Z]/.test(c)?c:'#'};
+ const row=m=>`<tr><td class=t>${e(m.titel)}<td>${e([m.componist,m.arrangeur&&'arr. '+m.arrangeur].filter(Boolean).join(', '))}<td>${e([un[m.uitgeverij_id],m.bestelnr].filter(Boolean).join(' / '))}<td>${pad(m.id)}`;
+ const split=(ws,pre)=>{const o=[];ws.sort(ct).forEach(m=>{const l=lt(m),k=(pre?e(pre)+' &nbsp;|&nbsp; ':'')+'<b>'+l+'</b>';(o.length&&o[o.length-1][2]==k?o[o.length-1][1]:(o.push([k,[],k]),o[o.length-1][1])).push(m)});return o};
+ let g=[];
+ if(perGenre){const by={};M.forEach(m=>{const l=gm[m.id]?.length?gm[m.id]:['(geen genre)'];l.forEach(n=>(by[n]??=[]).push(m))});
+  Object.keys(by).sort((a,b)=>a=='(geen genre)'?1:b=='(geen genre)'?-1:a.localeCompare(b,'nl')).forEach(n=>g.push(...split(by[n],n)))}
+ else g=split(M.slice());
+ return `<div class=mz><p><b>Overzicht obv ${perGenre?'Genre':'Titel'}</b></p><table class=mt><thead><tr class=mh><td colspan=4><div class=hd><img src=logo.png alt=""><div><h1>MUZIEK BIBLIOTHEEK</h1><h1 style="font-size:17px">${NAAM}</h1></div></div><tr><th style="width:36%">Titel<th style="width:30%">Componist / Arrangeur<th style="width:23%">Uitgeverij / Bestelnr.<th>Archiefnr.</thead><tbody>${g.map(([k,ws])=>`<tr class=sp><td colspan=4><tr class=mg><td colspan=4>${k}`+ws.map(row).join('')).join('')}</tbody></table></div>`}
+async function vRap(){
+ const opts=(can('leden')?'<option value=l>Leden overzicht</option><option value=d>Lidmaatschapsduur</option>':'')+(can('donateurs')?'<option value=n>Donateurs (per wijk of hele gebied)</option><option value=s>Donateurs stickers (21 per vel)</option>':'')+(can('muziek')?'<option value=mt>Muziekbibliotheek op titel</option><option value=mg>Muziekbibliotheek op genre en titel</option>':'');
+ main.innerHTML=`<div class="bar noprint"><h1>Rapporten</h1><select id=rt>${opts}</select><select id=rs><option value=a>Sorteren op achternaam</option><option value=n>Sorteren op lidnr.</option></select><input id=ry type=number value=${new Date().getFullYear()} title=Jaar><input id=rw placeholder="Wijk (leeg = hele gebied)"><button id=go>Genereren</button><button id=pr class=s>Afdrukken</button></div><div id=rep class=rep></div>`;
+ const sync=()=>{const t=$('#rt').value;$('#rs').style.display=t=='l'?'':'none';$('#ry').style.display=t=='d'||t=='n'?'':'none';$('#rw').style.display=t=='n'?'':'none'};
+ $('#rt').onchange=sync;sync();
+ $('#pr').onclick=()=>{const f=$('#rep iframe');if(f){f.contentWindow.focus();f.contentWindow.print()}else print()};
+ $('#go').onclick=async()=>{try{const t=$('#rt').value,Y=+$('#ry').value,w=$('#rw').value.trim();let h;
+  if(t=='l')h=rLeden(await q(sb.from('leden').select('*')),$('#rs').value);
+  else if(t=='d')h=rDuur(await q(sb.from('leden').select('*')),Y);
+  else if(t=='mt'||t=='mg'){const[M,U,G,MG]=await Promise.all([q(sb.from('muziek').select('*')),q(sb.from('uitgeverijen').select('id,naam')),q(sb.from('genres').select('*')),q(sb.from('muziek_genre').select('*'))]);h=rMuz(M,U,G,MG,t=='mg')}
+  else if(t=='s'){const f=document.createElement('iframe');f.srcdoc=rStick((await q(sb.from('donateurs').select('*'))).filter(d=>d.bijdrage>0));$('#rep').innerHTML='<p class=sm>Afdrukken: kies schaal 100% (niet "aanpassen aan pagina") en zet kop- en voetteksten uit. Leg het etikettenvel met de bedrukbare kant in de printer zoals door de printer wordt aangegeven.</p>';$('#rep').append(f);return}
+  else{const[D,H,L,WR]=await Promise.all([q(sb.from('donateurs').select('*')),q(sb.from('donatie_historie').select('*')),q(sb.rpc('lidnamen')),q(sb.from('wijken').select('*'))]);h=rDon(D,H,L,w,Y,Object.fromEntries(WR.map(x=>[x.wijknr,x.wijkloper])))||'<p>Geen donateurs gevonden.</p>'}
+  $('#rep').innerHTML=h}catch(er){toast(er.message,1)}};
+}
+
+// ===== Beheer =====
+function csv(naam,rows,cols){
+ const c=v=>{v=String(v??'');if(/^[=+@\t\r]/.test(v)||/^-[^\d]/.test(v))v="'"+v;return /[;"\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+ const t='\ufeff'+[cols.map(x=>c(x[0])).join(';'),...rows.map(r=>cols.map(x=>c(x[1](r))).join(';'))].join('\r\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv;charset=utf-8'}));a.download=`${naam}_${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+const num=v=>v==null?'':String(v).replace('.',',');
+async function vBeheer(){
+ const[L,R,G,WKr,GE]=await Promise.all([q(sb.from('leden').select('lidnr,voornaam,achternaam,email,actief,uitschrijfdatum').order('achternaam')),q(sb.from('rechten').select('*')),q(sb.from('groepen').select('naam').order('naam')),q(sb.from('wijken').select('*')),q(sb.from('genres').select('*').order('naam'))]);
+ const rm=Object.fromEntries(R.map(r=>[r.email.toLowerCase(),r.rechten])),RT=[['leden','Leden'],['donateurs','Donateurs'],['muziek','Muziek'],['beheer','Beheer']];
+ const act=L.filter(cur);
+ main.innerHTML=`<h1>Beheer</h1><details open><summary>Gebruikers en rechten</summary><table><tr><th>Naam<th>E-mail${RT.map(r=>`<th>${r[1]}`).join('')}<th></tr>${act.map(x=>{const em=(x.email||'').toLowerCase();return `<tr><td>${e(x.achternaam)}, ${e(x.voornaam)}<td>${e(x.email)||'<i>geen e-mail: kan niet inloggen</i>'}${RT.map(r=>`<td>${em?`<input type=checkbox data-e="${e(em)}" data-r=${r[0]} ${(rm[em]||[]).includes(r[0])?'checked':''}>`:''}`).join('')}<td>${em?`<button class=s data-reset="${e(em)}">Reset wachtwoord</button>`:''}`}).join('')}</table></details>
+ <details><summary>Groepen</summary><div id=gr></div><p><button id=ga>Groep toevoegen</button></p></details>
+ <details><summary>Genres (muziekbibliotheek)</summary><div id=ge></div><p><button id=gea>Genre toevoegen</button></p></details>
+ <details><summary>Uitgeverijen (muziekbibliotheek)</summary><p><button id=ue>Uitgeverijen beheren</button></p></details>
+ <details><summary>Wijken en wijklopers</summary><div id=wk></div><p><button id=wa>Wijk toevoegen</button></p></details>
+ <details><summary>Historie verwerken</summary><div id=hv></div></details>
+ <details><summary>Gegevens downloaden (CSV)</summary><p class=sm>Elk bestand wordt apart gedownload en opent direct in Excel.</p><p class=bar><button class=s data-dl=l>Leden</button><button class=s data-dl=d>Donateurs (incl. historie)</button><button class=s data-dl=m>Muziekbibliotheek</button></p></details>`;
+ const inp=[...main.querySelectorAll('input[data-e]')];
+ inp.forEach(c=>c.onchange=async()=>{const em=c.dataset.e,set=inp.filter(x=>x.dataset.e==em&&x.checked).map(x=>x.dataset.r);try{await q(sb.from('rechten').upsert({email:em,rechten:set}));toast('Rechten opgeslagen')}catch(er){toast(er.message,1)}});
+ main.querySelectorAll('[data-reset]').forEach(b=>b.onclick=async()=>{if(!confirm('Wachtwoord van '+b.dataset.reset+' resetten? Deze persoon moet een nieuw wachtwoord aanmaken.'))return;try{await q(sb.rpc('admin_reset_wachtwoord',{p_email:b.dataset.reset}));toast('Reset uitgevoerd. Laat de gebruiker "Eerste keer" gebruiken.')}catch(er){toast(er.message,1)}});
+ $('#gr').innerHTML=G.map(g=>`<span style="display:inline-block;background:#fff;border:1px solid var(--l);border-radius:6px;padding:4px 8px;margin:2px">${e(g.naam)} <a href=# data-ren="${e(g.naam)}">✎</a> <a href=# data-del="${e(g.naam)}">✕</a></span>`).join('');
+ const act2=async f=>{try{await f();vBeheer()}catch(er){toast(er.message,1)}};
+ $('#ga').onclick=()=>{const n=prompt('Naam van de nieuwe groep');n&&act2(()=>q(sb.from('groepen').insert({naam:n.trim()})))};
+ main.querySelectorAll('[data-ren]').forEach(a=>a.onclick=ev=>{ev.preventDefault();const n=prompt('Nieuwe naam',a.dataset.ren);n&&act2(()=>q(sb.from('groepen').update({naam:n.trim()}).eq('naam',a.dataset.ren)))});
+ main.querySelectorAll('[data-del]').forEach(a=>a.onclick=ev=>{ev.preventDefault();confirm('Groep verwijderen?')&&act2(()=>q(sb.from('groepen').delete().eq('naam',a.dataset.del)))});
+ $('#ge').innerHTML=GE.map(g=>`<span style="display:inline-block;background:#fff;border:1px solid var(--l);border-radius:6px;padding:4px 8px;margin:2px">${e(g.naam)} <a href=# data-gr="${g.id}">✎</a> <a href=# data-gd="${g.id}">✕</a></span>`).join('');
+ $('#gea').onclick=()=>{const n=prompt('Naam van het nieuwe genre');n&&act2(()=>q(sb.from('genres').insert({naam:n.trim()})))};
+ main.querySelectorAll('[data-gr]').forEach(a=>a.onclick=ev=>{ev.preventDefault();const g=GE.find(x=>x.id==a.dataset.gr),n=prompt('Nieuwe naam',g.naam);n&&act2(()=>q(sb.from('genres').update({naam:n.trim()}).eq('id',g.id)))});
+ main.querySelectorAll('[data-gd]').forEach(a=>a.onclick=ev=>{ev.preventDefault();confirm('Genre verwijderen? Dit kan alleen als geen muziekwerk dit genre nog heeft.')&&act2(()=>q(sb.from('genres').delete().eq('id',a.dataset.gd)))});
+ $('#ue').onclick=()=>uitgBeheer();
+ const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam])),WK=[...WKr].sort((a,b)=>String(a.wijknr).localeCompare(String(b.wijknr),'nl',{numeric:true}));
+ const FW=[['wijknr','Wijknummer*','text'],['wijkloper','Wijkloper(s) (Ctrl/Cmd-klik voor meerdere)','multi',act.slice().sort(by).map(x=>[x.lidnr,x.achternaam+', '+x.voornaam])]];
+ const ow=r=>form(r?'Wijk bewerken':'Nieuwe wijk',FW,r||{wijkloper:[]},async o=>{r?await q(sb.from('wijken').update(o).eq('wijknr',r.wijknr)):await q(sb.from('wijken').insert(o));vBeheer()},r&&(async()=>{await q(sb.from('wijken').delete().eq('wijknr',r.wijknr));vBeheer()}),'Wijk verwijderen? Dit kan alleen als er geen donateurs meer aan deze wijk gekoppeld zijn.');
+ $('#wk').innerHTML=`<table><tr><th>Wijk<th>Wijkloper(s)</tr>${WK.map(r=>`<tr class=c data-w="${e(r.wijknr)}"><td>${e(r.wijknr)}<td>${e((r.wijkloper||[]).map(n=>nm[n]).filter(Boolean).join(', '))}`).join('')}</table>`;
+ $('#wk').querySelectorAll('tr.c').forEach(tr=>tr.onclick=()=>ow(WK.find(x=>x.wijknr==tr.dataset.w)));$('#wa').onclick=()=>ow();
+ const dl={
+  l:async()=>csv('leden',await q(sb.from('leden').select('*').order('lidnr')),[['Lidnr',r=>r.lidnr],['Voornaam',r=>r.voornaam],['Achternaam',r=>r.achternaam],['E-mail',r=>r.email],['Adres',r=>r.adres],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Telefoon',r=>r.telefoon],['Geboortedatum',r=>r.geboortedatum],['Lid sinds',r=>r.lid_sinds],['Instrument',r=>r.instrument],['Sectie',r=>r.sectie],['Docent',r=>r.docent],['Groepen',r=>(r.groepen||[]).join(', ')],['Ingeschreven',r=>r.actief?'ja':'nee'],['Uitschrijving per',r=>r.uitschrijfdatum]]),
+  d:async()=>{const[D,H]=await Promise.all([q(sb.from('donateurs').select('*').order('wijknr').order('adres')),q(sb.from('donatie_historie').select('*'))]);
+   const ys=[...new Set(H.map(x=>x.jaar))].sort(),m={};H.forEach(x=>m[x.donateur_id+'-'+x.jaar]=x.bedrag);
+   csv('donateurs',D,[['Naamregel 1',r=>r.naam1],['Naamregel 2',r=>r.naam2],['Adres',r=>r.adres],['Huisnummer',r=>r.huisnr],['Toevoeging',r=>r.toevoeging],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Bijdrage',r=>num(r.bijdrage)],['Wijk',r=>r.wijknr],['Mededelingen',r=>r.mededelingen],...ys.map(y=>['Betaald '+y,r=>num(m[r.id+'-'+y])])])},
+  m:async()=>{const[M,U,G,MG]=await Promise.all([q(sb.from('muziek').select('*').order('titel')),q(sb.from('uitgeverijen').select('id,naam')),q(sb.from('genres').select('*')),q(sb.from('muziek_genre').select('*'))]);
+   const un=Object.fromEntries(U.map(u=>[u.id,u.naam])),gn=Object.fromEntries(G.map(g=>[g.id,g.naam])),gm={};MG.forEach(x=>(gm[x.muziek_id]??=[]).push(gn[x.genre_id]));
+   csv('muziekbibliotheek',M,[['Archiefnr',r=>pad(r.id)],['Titel',r=>r.titel],['Componist',r=>r.componist],['Arrangeur',r=>r.arrangeur],['Genres',r=>(gm[r.id]||[]).sort().join(', ')],['Uitgeverij',r=>un[r.uitgeverij_id]],['Bestelnr',r=>r.bestelnr],['Opmerkingen',r=>r.opmerkingen]])}};
+ main.querySelectorAll('[data-dl]').forEach(b=>b.onclick=async()=>{try{await dl[b.dataset.dl]()}catch(er){toast(er.message,1)}});
+ vHist().catch(er=>toast(er.message,1));
+}
+
+// ===== Start =====
+(async()=>{
+ if(!OK){app.innerHTML='<div class=login><img src=logo.png alt=""><h2>Nog niet geconfigureerd</h2><p>Vul bovenin dit bestand (CFG) de Supabase URL en anon key in. Zie de stappen in de handleiding.</p></div>';return}
+ const{data:{session}}=await sb.auth.getSession();session?boot(session.user.email):login();
+})();
+</script></body></html>
