@@ -20,7 +20,7 @@ dialog{border:0;border-radius:12px;padding:20px;width:min(680px,96vw)}
 label,.lb{font-size:13px;color:#444;display:block}.hr{display:flex;gap:6px;margin-top:4px}.sm{font-size:12px;color:#666}
 .toast{position:fixed;bottom:16px;right:16px;background:var(--b);color:#fff;padding:10px 14px;border-radius:8px;z-index:99}.toast.bad{background:#b3261e}
 .rep{background:#fff;padding:12px;color:#000;font-size:11px}.rep table{width:100%}.rep th,.rep td{padding:3px 6px;white-space:nowrap;font-size:11px}.rep h2{font-size:14px;margin:6px 0}.rep .rt{font-size:18px}.hd{display:flex;align-items:center;gap:14px}.hd img{width:80px}.rt{font-family:Georgia,serif;letter-spacing:.06em;text-align:center;margin:0}
-.rs{color:#0a7b83}.gh td{background:#ccc9c0;font-weight:600}.gh.jb td{background:#f2dc8b}.dn td{border-bottom:0}.dn .c,.dn .ch th{text-align:center}.dn .ch th{font-weight:400;font-size:10px;border:0}.dn .st{font-size:14px;font-weight:700;padding-top:10px;border-bottom:1px dotted #000}.bx{display:inline-block;width:12px;height:12px;border:1px solid #000;vertical-align:middle;line-height:11px;font-size:11px;text-align:center}.bx.k::after{content:'X';font-weight:700}.ft .bx{border-color:#1f3fb5}.dn .rt{color:#1f3fb5}.dn .h{padding:3px 1px}.mt{border-collapse:collapse}.mt td,.mt th{padding:4px 6px;border:0;background:none;white-space:normal;text-align:left;vertical-align:top}.mt th{font-weight:700;padding-bottom:10px}.mt .mh td{padding:0 0 12px}.mt h1{margin:0;font:400 20px system-ui,sans-serif;color:#000}.mt .sp td{height:16px;padding:0}.mt .mg td{border-top:1px solid #000;border-bottom:1px solid #000;padding:5px 2px;font-size:13px}.mt td.t{padding-left:24px}.mz{page:muz}@page muz{margin:12mm;@top-right{content:'Pagina ' counter(page) ' van ' counter(pages);font:11px sans-serif}}dialog p.bar{margin-top:28px}summary{font-size:17px;font-weight:600;color:var(--n);cursor:pointer;margin:16px 0 8px}details{border-top:1px solid var(--l)}
+.rs{color:#0a7b83}.gh td{background:#ccc9c0;font-weight:600}.gh.jb td{background:#f2dc8b}.dn td{border-bottom:0}.dn .c,.dn .ch th{text-align:center}.dn .ch th{font-weight:400;font-size:10px;border:0}.dn .st{font-size:14px;font-weight:700;padding-top:10px;border-bottom:1px dotted #000}.bx{display:inline-block;width:12px;height:12px;border:1px solid #000;vertical-align:middle;line-height:11px;font-size:11px;text-align:center}.bx.k::after{content:'X';font-weight:700}.ft .bx{border-color:#1f3fb5}.dn .rt{color:#1f3fb5}.dn .h{padding:3px 1px}.fr td{padding:3px 4px;background:#f4f6fb}.fr input,.fr select{padding:4px 6px;font-size:13px;min-width:70px}.cnt{margin:0 0 8px}.mt{border-collapse:collapse}.mt td,.mt th{padding:4px 6px;border:0;background:none;white-space:normal;text-align:left;vertical-align:top}.mt th{font-weight:700;padding-bottom:10px}.mt .mh td{padding:0 0 12px}.mt h1{margin:0;font:400 20px system-ui,sans-serif;color:#000}.mt .sp td{height:16px;padding:0}.mt .mg td{border-top:1px solid #000;border-bottom:1px solid #000;padding:5px 2px;font-size:13px}.mt td.t{padding-left:24px}.mz{page:muz}@page muz{margin:12mm;@top-right{content:'Pagina ' counter(page) ' van ' counter(pages);font:11px sans-serif}}dialog p.bar{margin-top:28px}summary{font-size:17px;font-weight:600;color:var(--n);cursor:pointer;margin:16px 0 8px}details{border-top:1px solid var(--l)}
 @page{margin:12mm}
 .fs{display:none}.ft{margin-top:14px;font-size:11px}.fl{border-top:1px solid #1f3fb5;margin-bottom:3px}.ftt{margin-bottom:6px}
 .fg{display:grid;grid-template-columns:3fr 3fr 50px 80px 40px 40px;gap:6px;align-items:end}.fh span,.fh b{text-align:left}.fh b{font-size:16px;text-align:center}.fh .bw{grid-column:span 2;text-align:center}.fh .w{text-align:center}
@@ -33,7 +33,7 @@ label,.lb{font-size:13px;color:#444;display:block}.hr{display:flex;gap:6px;margi
 <script>
 if(top!==self){document.body.innerHTML='';throw new Error('Niet toegestaan in een frame')}
 // ===== CONFIGURATIE: vul in vanuit Supabase > Project Settings > API =====
-const CFG={url:'https://ixybybmolnkqkdabyxcj.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4eWJ5Ym1vbG5rcWtkYWJ5eGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3Mzg2MzcsImV4cCI6MjEwODMxNDYzN30.AUyljK5NrduOZHhkdfexUjHA5Lad2nm1QqDp7QSFlD8'};
+const CFG={url:'https://JOUW-PROJECT.supabase.co',key:'JOUW-ANON-PUBLIC-KEY'};
 const NAAM='Muziekvereniging Constantia, Werkhoven';
 const OK=!CFG.url.includes('JOUW'),sb=OK?supabase.createClient(CFG.url,CFG.key,{auth:{storage:window.sessionStorage}}):null;
 const $=s=>document.querySelector(s),app=$('#app');let main,me={email:'',rechten:[]};
@@ -52,7 +52,7 @@ const hr=r=>{const y=r.jaar??YR;let o='';for(let i=Math.min(1995,y);i<=Math.max(
 let idleT;const idle=()=>{clearTimeout(idleT);idleT=setTimeout(async()=>{if(!$('nav'))return;await sb.auth.signOut();login('Je bent automatisch uitgelogd na 30 minuten zonder activiteit.')},18e5)};
 ['click','keydown','touchstart','mousemove'].forEach(v=>addEventListener(v,idle,{passive:true}));
 // ===== Inloggen =====
-function login(msg='',first=false){
+function login(msg='',first=false){lidF=null;
  app.innerHTML=`<form class=login><img src=logo.png alt="${NAAM}"><h2>${first?'Wachtwoord aanmaken':'Inloggen'}</h2><p class=err>${e(msg)}</p>
  <label>E-mailadres (inlognaam)<input id=em type=email required autocomplete=username></label>
  <label>Wachtwoord<input id=pw type=password required autocomplete="${first?'new-password':'current-password'}"></label>
@@ -117,11 +117,18 @@ function form(title,F,v,save,del,msg){
    else{o[k]=el.value.trim()||null;if(t=='number'&&o[k]!=null)o[k]=+o[k]}});
   try{await save(o);d.remove();toast('Opgeslagen')}catch(er){toast(er.message,1)}};
 }
-function list(rows,cols,fn){
- const s=main.querySelector('input.q'),t=main.querySelector('.tb');
- const draw=()=>{const f=s.value.toLowerCase(),R=rows.filter(r=>JSON.stringify(Object.values(r)).toLowerCase().includes(f));
-  t.innerHTML=`<table><tr>${cols.map(c=>`<th>${c[0]}`).join('')}</tr>${R.map(r=>`<tr class=c>${cols.map(c=>`<td>${e(c[1](r))}`).join('')}`).join('')}</table>`;
-  t.querySelectorAll('tr.c').forEach((tr,i)=>tr.onclick=()=>fn(R[i]))};
+let lidF=null;
+function list(rows,cols,fn,o={}){
+ const s=main.querySelector('input.q'),t=main.querySelector('.tb'),st=o.state||{},hf=!!o.filters;
+ const txt=(c,r)=>String(c[1](r)??'');
+ const mt=(c,r,v)=>{const x=txt(c,r);return c[2]=='pre'?x.startsWith(v):c[2]=='sel'?x.split(', ').includes(v):x.toLowerCase().includes(v.toLowerCase())};
+ t.innerHTML=`${hf?'<p class="sm cnt"></p>':''}<table><thead><tr>${cols.map(c=>`<th>${c[0]}`).join('')}</tr>${hf?`<tr class=fr>${cols.map((c,i)=>`<td>${c[2]?`<select data-i=${i}><option value="">Alle</option>${(c[3]||[]).map(x=>`<option ${st[c[0]]===x?'selected':''}>${e(x)}</option>`).join('')}</select>`:`<input data-i=${i} placeholder="Filter..." value="${e(st[c[0]]||'')}">`}`).join('')}</tr>`:''}</thead><tbody></tbody></table>`;
+ const draw=()=>{const f=s.value.toLowerCase(),R=rows.filter(r=>JSON.stringify(Object.values(r)).toLowerCase().includes(f)&&cols.every(c=>!st[c[0]]||mt(c,r,st[c[0]])));
+  t.querySelector('tbody').innerHTML=R.map(r=>`<tr class=c>${cols.map(c=>`<td>${e(txt(c,r))}`).join('')}`).join('');
+  t.querySelectorAll('tbody tr').forEach((tr,i)=>tr.onclick=()=>fn(R[i]));
+  if(hf)t.querySelector('.cnt').innerHTML=`${R.length} van ${rows.length} getoond`+(Object.values(st).some(Boolean)?' · <a href=# class=cf>Filters wissen</a>':'')};
+ if(hf){t.querySelectorAll('.fr [data-i]').forEach(el=>el[el.tagName=='SELECT'?'onchange':'oninput']=()=>{st[cols[el.dataset.i][0]]=el.value;draw()});
+  t.querySelector('.cnt').onclick=ev=>{if(!ev.target.classList.contains('cf'))return;ev.preventDefault();Object.keys(st).forEach(k=>st[k]='');t.querySelectorAll('.fr [data-i]').forEach(el=>el.value='');draw()}}
  s.oninput=draw;draw()}
 const head=(t,n)=>`<div class=bar><h1>${t}</h1><input class=q placeholder="Zoeken..."><button id=n>${n}</button></div><div class=tb></div>`;
 
@@ -133,7 +140,8 @@ async function vLeden(){
  const next=Math.max(0,...L.map(x=>x.lidnr))+1;
  const open=r=>form(r?'Lid bewerken':'Nieuw lid',F,r||{lidnr:next,actief:true,groepen:[]},async o=>{if(o.actief)o.uitschrijfdatum=null;r?await q(sb.from('leden').update(o).eq('lidnr',r.lidnr)):await q(sb.from('leden').insert(o));vLeden()});
  main.innerHTML=head('Leden','Nieuw lid');$('#n').onclick=()=>open();
- list(L,[['Lidnr.',r=>r.lidnr],['Naam',r=>r.achternaam+', '+r.voornaam],['Instrument',r=>r.instrument],['Groepen',r=>(r.groepen||[]).join(', ')],['Lid sinds',r=>fd(r.lid_sinds)],['Status',r=>r.actief?'Ingeschreven':'Uitgeschreven per '+fd(r.uitschrijfdatum)]],open);
+ lidF??={Status:'Ingeschreven'};
+ list(L,[['Lidnr.',r=>r.lidnr],['Naam',r=>r.achternaam+', '+r.voornaam],['Instrument',r=>r.instrument,'sel',[...new Set(L.map(x=>x.instrument).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'nl'))],['Groepen',r=>(r.groepen||[]).join(', '),'sel',G],['Lid sinds',r=>fd(r.lid_sinds)],['Status',r=>r.actief?'Ingeschreven':'Uitgeschreven per '+fd(r.uitschrijfdatum),'pre',['Ingeschreven','Uitgeschreven']]],open,{filters:true,state:lidF});
 }
 
 // ===== Donateurs =====
