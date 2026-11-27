@@ -33,7 +33,7 @@ label,.lb{font-size:13px;color:#444;display:block}.hr{display:flex;gap:6px;margi
 <script>
 if(top!==self){document.body.innerHTML='';throw new Error('Niet toegestaan in een frame')}
 // ===== CONFIGURATIE: vul in vanuit Supabase > Project Settings > API =====
-const CFG={url:'https://ixybybmolnkqkdabyxcj.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4eWJ5Ym1vbG5rcWtkYWJ5eGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3Mzg2MzcsImV4cCI6MjEwODMxNDYzN30.AUyljK5NrduOZHhkdfexUjHA5Lad2nm1QqDp7QSFlD8'};
+const CFG={url:'https://JOUW-PROJECT.supabase.co',key:'JOUW-ANON-PUBLIC-KEY'};
 const NAAM='Muziekvereniging Constantia, Werkhoven';
 const OK=!CFG.url.includes('JOUW'),sb=OK?supabase.createClient(CFG.url,CFG.key,{auth:{storage:window.sessionStorage}}):null;
 const $=s=>document.querySelector(s),app=$('#app');let main,me={email:'',rechten:[]};
@@ -150,7 +150,7 @@ async function vDon(){
  const[D,H,L,WR]=await Promise.all([q(sb.from('donateurs').select('*').order('wijknr').order('adres').order('huisnr')),q(sb.from('donatie_historie').select('*').order('jaar',{ascending:false})),q(sb.rpc('lidnamen')),q(sb.from('wijken').select('*'))]);
  const WK=Object.fromEntries(WR.map(x=>[x.wijknr,x.wijkloper])),W=WR.map(x=>x.wijknr).sort((a,b)=>String(a).localeCompare(String(b),'nl',{numeric:true}));
  const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam]));
- const F=[['naam1','Naamregel 1*','text'],['naam2','Naamregel 2','text'],['adres','Adres*','text'],['huisnr','Huisnummer*','number'],['toevoeging','Toevoeging huisnummer','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['bijdrage','Donateursbijdrage (€)','number',null,'Leeg laten = geen donateur op dit adres'],['wijknr','Wijknummer*','sel',W,'Wijken en wijklopers beheer je onder Beheer'],['mededelingen','Mededelingen','area'],['hist','Historie: betaalde bijdrage per jaar','hist']];
+ const F=[['naam1','Naamregel 1*','text'],['naam2','Naamregel 2','text'],['adres','Adres*','text'],['huisnr','Huisnummer*','number'],['toevoeging','Toevoeging huisnummer','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['bijdrage','Donateursbijdrage (€)','number',null,'Leeg laten = geen donateur op dit adres'],['lage_bijdrage','Lagere bijdrage (niet uitnodigen voor donateursconcerten)','bool'],['wijknr','Wijknummer*','sel',W,'Wijken en wijklopers beheer je onder Beheer'],['mededelingen','Mededelingen','area'],['hist','Historie: betaalde bijdrage per jaar','hist']];
  const open=r=>form(r?'Donateur bewerken':'Nieuwe donateur',F,r?{...r,hist:H.filter(h=>h.donateur_id==r.id)}:{hist:[],bijdrage:10},async o=>{
   const h=o.hist;delete o.hist;let id=r?.id;
   if(r)await q(sb.from('donateurs').update(o).eq('id',id));else id=(await q(sb.from('donateurs').insert(o).select('id').single())).id;
@@ -158,7 +158,7 @@ async function vDon(){
   if(h.length)await q(sb.from('donatie_historie').insert(h.map(x=>({donateur_id:id,jaar:x.jaar,bedrag:x.bedrag,betaalwijze:x.betaalwijze}))));
   vDon()},r&&(async()=>{await q(sb.from('donateurs').delete().eq('id',r.id));vDon()}),'Let op: ook de volledige historie van deze donateur wordt verwijderd. Is de donateur gestopt? Maak dan het veld Donateursbijdrage leeg, dan blijft de historie bewaard. Toch verwijderen?');
  main.innerHTML=head('Donateurs','Nieuwe donateur');$('#n').onclick=()=>open();
- list(D,[['Wijk',r=>r.wijknr],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Bijdrage',r=>r.bijdrage>0?'€ '+Number(r.bijdrage).toFixed(2):'geen donateur'],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
+ list(D,[['Wijk',r=>r.wijknr],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Bijdrage',r=>r.bijdrage>0?'€ '+Number(r.bijdrage).toFixed(2):'geen donateur'],['Concert',r=>r.bijdrage>0?(r.lage_bijdrage?'niet uitnodigen':'ja'):''],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
 }
 
 // ===== Historie verwerken =====
@@ -342,7 +342,7 @@ async function vBeheer(vers){
   l:async()=>csv('leden',await q(sb.from('leden').select('*').order('lidnr')),[['Lidnr',r=>r.lidnr],['Voornaam',r=>r.voornaam],['Achternaam',r=>r.achternaam],['E-mail',r=>r.email],['Adres',r=>r.adres],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Telefoon',r=>r.telefoon],['Geboortedatum',r=>r.geboortedatum],['Geslacht',r=>r.geslacht],['Lid sinds',r=>r.lid_sinds],['Instrument',r=>r.instrument],['Sectie',r=>r.sectie],['Docent',r=>r.docent],['Groepen',r=>(r.groepen||[]).join(', ')],['Ingeschreven',r=>r.actief?'ja':'nee'],['Uitschrijving per',r=>r.uitschrijfdatum]]),
   d:async()=>{const[D,H]=await Promise.all([q(sb.from('donateurs').select('*').order('wijknr').order('adres')),q(sb.from('donatie_historie').select('*'))]);
    const ys=[...new Set(H.map(x=>x.jaar))].sort(),m={};H.forEach(x=>m[x.donateur_id+'-'+x.jaar]=x.bedrag);
-   csv('donateurs',D,[['Naamregel 1',r=>r.naam1],['Naamregel 2',r=>r.naam2],['Adres',r=>r.adres],['Huisnummer',r=>r.huisnr],['Toevoeging',r=>r.toevoeging],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Bijdrage',r=>num(r.bijdrage)],['Wijk',r=>r.wijknr],['Mededelingen',r=>r.mededelingen],...ys.map(y=>['Betaald '+y,r=>num(m[r.id+'-'+y])])])},
+   csv('donateurs',D,[['Naamregel 1',r=>r.naam1],['Naamregel 2',r=>r.naam2],['Adres',r=>r.adres],['Huisnummer',r=>r.huisnr],['Toevoeging',r=>r.toevoeging],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Bijdrage',r=>num(r.bijdrage)],['Lagere bijdrage',r=>r.lage_bijdrage?'ja':''],['Wijk',r=>r.wijknr],['Mededelingen',r=>r.mededelingen],...ys.map(y=>['Betaald '+y,r=>num(m[r.id+'-'+y])])])},
   r:async()=>csv('relaties',await q(sb.from('relaties').select('*').order('relatienr')),[['Relatienr',r=>r.relatienr],['Naam',r=>r.naam],['Vervolg naam',r=>r.vervolgnaam],['Adres',r=>r.adres],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Telefoonnr',r=>r.telefoon],['E-mailadres',r=>r.email],['Relatie categorie',r=>(r.categorieen||[]).join(', ')],['Memo',r=>r.memo]]),
   m:async()=>{const[M,U,G,MG]=await Promise.all([q(sb.from('muziek').select('*').order('titel')),q(sb.from('uitgeverijen').select('id,naam')),q(sb.from('genres').select('*')),q(sb.from('muziek_genre').select('*'))]);
    const un=Object.fromEntries(U.map(u=>[u.id,u.naam])),gn=Object.fromEntries(G.map(g=>[g.id,g.naam])),gm={};MG.forEach(x=>(gm[x.muziek_id]??=[]).push(gn[x.genre_id]));
