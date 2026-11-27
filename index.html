@@ -20,7 +20,7 @@ dialog{border:0;border-radius:12px;padding:20px;width:min(680px,96vw)}
 label,.lb{font-size:13px;color:#444;display:block}.hr{display:flex;gap:6px;margin-top:4px}.sm{font-size:12px;color:#666}
 .toast{position:fixed;bottom:16px;right:16px;background:var(--b);color:#fff;padding:10px 14px;border-radius:8px;z-index:99}.toast.bad{background:#b3261e}
 .rep{background:#fff;padding:12px;color:#000;font-size:11px}.rep table{width:100%}.rep th,.rep td{padding:3px 6px;white-space:nowrap;font-size:11px}.rep h2{font-size:14px;margin:6px 0}.rep .rt{font-size:18px}.hd{display:flex;align-items:center;gap:14px}.hd img{width:80px}.rt{font-family:Georgia,serif;letter-spacing:.06em;text-align:center;margin:0}
-.rs{color:#0a7b83}.gh td{background:#ccc9c0;font-weight:600}.gh.jb td{background:#f2dc8b}.dn td{border-bottom:0}.dn .c,.dn .ch th{text-align:center}.dn .ch th{font-weight:400;font-size:10px;border:0}.dn .st{font-size:14px;font-weight:700;padding-top:10px;border-bottom:1px dotted #000}.bx{display:inline-block;width:12px;height:12px;border:1px solid #000;vertical-align:middle;line-height:11px;font-size:11px;text-align:center}.bx.k::after{content:'X';font-weight:700}.ft .bx{border-color:#1f3fb5}.dn .rt{color:#1f3fb5}.dn .h{padding:3px 1px}.chkrow{display:flex;align-items:center}.chkrow .cl{width:80px;flex:none}.chkrow .co{display:flex;flex-wrap:wrap;gap:4px 14px}.chkrow .co span{margin-right:0!important}.fr td{padding:3px 4px;background:#f4f6fb}.fr input,.fr select{padding:4px 6px;font-size:13px;min-width:70px}.cnt{margin:0 0 8px}.mt{border-collapse:collapse}.mt td,.mt th{padding:4px 6px;border:0;background:none;white-space:normal;text-align:left;vertical-align:top}.mt th{font-weight:700;padding-bottom:10px}.mt .mh td{padding:0 0 12px}.mt h1{margin:0;font:400 20px system-ui,sans-serif;color:#000}.mt .sp td{height:16px;padding:0}.mt .mg td{border-top:1px solid #000;border-bottom:1px solid #000;padding:5px 2px;font-size:13px}.mt td.t{padding-left:24px}.mz{page:muz}@page muz{margin:12mm;@top-right{content:'Pagina ' counter(page) ' van ' counter(pages);font:11px sans-serif}}dialog p.bar{margin-top:28px}summary{font-size:17px;font-weight:600;color:var(--n);cursor:pointer;margin:16px 0 8px}details{border-top:1px solid var(--l)}
+.rs{color:#0a7b83}.gh td{background:#ccc9c0;font-weight:600}.gh.jb td{background:#f2dc8b}.dn td{border-bottom:0}.dn .c,.dn .ch th{text-align:center}.dn .ch th{font-weight:400;font-size:10px;border:0}.dn .st{font-size:14px;font-weight:700;padding-top:10px;border-bottom:1px dotted #000}.bx{display:inline-block;width:12px;height:12px;border:1px solid #000;vertical-align:middle;line-height:11px;font-size:11px;text-align:center}.bx.k::after{content:'X';font-weight:700}.ft .bx{border-color:#1f3fb5}.dn .rt{color:#1f3fb5}.dn .h{padding:3px 1px}.chkrow{display:flex;align-items:center}.chkrow .cl{min-width:80px;padding-right:8px;flex:none}.chkrow .co{display:flex;flex-wrap:wrap;gap:4px 14px}.chkrow .co span{margin-right:0!important}.fr td{padding:3px 4px;background:#f4f6fb}.fr input,.fr select{padding:4px 6px;font-size:13px;min-width:70px}.cnt{margin:0 0 8px}.mt{border-collapse:collapse}.mt td,.mt th{padding:4px 6px;border:0;background:none;white-space:normal;text-align:left;vertical-align:top}.mt th{font-weight:700;padding-bottom:10px}.mt .mh td{padding:0 0 12px}.mt h1{margin:0;font:400 20px system-ui,sans-serif;color:#000}.mt .sp td{height:16px;padding:0}.mt .mg td{border-top:1px solid #000;border-bottom:1px solid #000;padding:5px 2px;font-size:13px}.mt td.t{padding-left:24px}.mz{page:muz}@page muz{margin:12mm;@top-right{content:'Pagina ' counter(page) ' van ' counter(pages);font:11px sans-serif}}dialog p.bar{margin-top:28px}summary{font-size:17px;font-weight:600;color:var(--n);cursor:pointer;margin:16px 0 8px}details{border-top:1px solid var(--l)}
 @page{margin:12mm}
 .fs{display:none}.ft{margin-top:14px;font-size:11px}.fl{border-top:1px solid #1f3fb5;margin-bottom:3px}.ftt{margin-bottom:6px}
 .fg{display:grid;grid-template-columns:3fr 3fr 50px 80px 40px 40px;gap:6px;align-items:end}.fh span,.fh b{text-align:left}.fh b{font-size:16px;text-align:center}.fh .bw{grid-column:span 2;text-align:center}.fh .w{text-align:center}
@@ -52,7 +52,7 @@ const hr=r=>{const y=r.jaar??YR;let o='';for(let i=Math.min(1995,y);i<=Math.max(
 let idleT;const idle=()=>{clearTimeout(idleT);idleT=setTimeout(async()=>{if(!$('nav'))return;await sb.auth.signOut();login('Je bent automatisch uitgelogd na 30 minuten zonder activiteit.')},18e5)};
 ['click','keydown','touchstart','mousemove'].forEach(v=>addEventListener(v,idle,{passive:true}));
 // ===== Inloggen =====
-function login(msg='',first=false){lidF=null;
+function login(msg='',first=false){lidF=null;relF=null;
  app.innerHTML=`<form class=login><img src=logo.png alt="${NAAM}"><h2>${first?'Wachtwoord aanmaken':'Inloggen'}</h2><p class=err>${e(msg)}</p>
  <label>E-mailadres (inlognaam)<input id=em type=email required autocomplete=username></label>
  <label>Wachtwoord<input id=pw type=password required autocomplete="${first?'new-password':'current-password'}"></label>
@@ -71,7 +71,7 @@ function login(msg='',first=false){lidF=null;
   }catch(er){const m=er.message||'';login(m.includes('Invalid login')?'Onjuist e-mailadres of wachtwoord.':m.includes('already')?'Dit account bestaat al. Log in, of vraag de beheerder om een reset.':m.includes('Database error')?'Dit e-mailadres kan niet worden geactiveerd. Controleer het adres of neem contact op met de beheerder.':m,first)}}}
 
 // ===== Shell + menu =====
-const M=[['leden','Leden','leden',()=>vLeden()],['don','Donateurs','donateurs',()=>vDon()],['mus','Muziekbibliotheek','muziek',()=>vMus()],['rap','Rapporten','rap',()=>vRap()],['beh','Beheer','beheer',()=>vBeheer()]];
+const M=[['leden','Leden','leden',()=>vLeden()],['don','Donateurs','donateurs',()=>vDon()],['rel','Relaties','relaties',()=>vRel()],['mus','Muziekbibliotheek','muziek',()=>vMus()],['rap','Rapporten','rap',()=>vRap()],['beh','Beheer','beheer',()=>vBeheer()]];
 async function boot(email){
  try{
   if(!await q(sb.rpc('is_lid_email',{p_email:email}))){await sb.auth.signOut();return login('Dit e-mailadres komt niet (meer) voor in de ledenadministratie.')}
@@ -218,6 +218,18 @@ async function vMus(){
  list(rows,[['Archiefnr.',r=>r.archief],['Titel',r=>r.titel],['Componist',r=>r.componist],['Arrangeur',r=>r.arrangeur],['Genres',r=>r.genres.join(', ')],['Uitgeverij',r=>r.uitgeverij],['Bestelnr.',r=>r.bestelnr]],open);
 }
 
+// ===== Relaties =====
+let relF=null;
+async function vRel(){
+ const[R,C]=await Promise.all([q(sb.from('relaties').select('*').order('naam')),q(sb.from('relatie_categorieen').select('naam').order('naam'))]);
+ const CN=C.map(x=>x.naam);
+ const F=[['relatienr','Relatienr.','ro'],['naam','Naam*','text'],['vervolgnaam','Vervolg naam','text'],['adres','Adres','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['telefoon','Telefoonnr.','tel'],['email','E-mailadres','email'],['categorieen','Relatie categorie:','chk',CN,'Categorieën beheer je onder Beheer'],['memo','Memo','area']];
+ const open=r=>form(r?'Relatie bewerken':'Nieuwe relatie',F,r||{relatienr:'wordt automatisch toegekend',categorieen:[]},async o=>{r?await q(sb.from('relaties').update(o).eq('relatienr',r.relatienr)):await q(sb.from('relaties').insert(o));vRel()},r&&(async()=>{await q(sb.from('relaties').delete().eq('relatienr',r.relatienr));vRel()}));
+ main.innerHTML=head('Relaties','Nieuwe relatie');$('#n').onclick=()=>open();
+ relF??={};
+ list(R,[['Relatienr.',r=>r.relatienr,'geen'],['Naam',r=>[r.naam,r.vervolgnaam].filter(Boolean).join(' - ')],['Woonplaats',r=>r.woonplaats],['Telefoonnr.',r=>r.telefoon,'geen'],['E-mailadres',r=>r.email,'geen'],['Categorie',r=>(r.categorieen||[]).join(', '),'sel',CN]],open,{filters:true,state:relF,widths:{'Relatienr.':'6%'}});
+}
+
 // ===== Rapporten =====
 const cur=x=>x.actief||(x.uitschrijfdatum&&x.uitschrijfdatum>new Date().toISOString().slice(0,10));
 function rLeden(L,s){
@@ -289,16 +301,17 @@ function csv(naam,rows,cols){
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv;charset=utf-8'}));a.download=`${naam}_${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 const num=v=>v==null?'':String(v).replace('.',',');
 async function vBeheer(){
- const[L,R,G,WKr,GE]=await Promise.all([q(sb.from('leden').select('lidnr,voornaam,achternaam,email,actief,uitschrijfdatum').order('achternaam')),q(sb.from('rechten').select('*')),q(sb.from('groepen').select('naam').order('naam')),q(sb.from('wijken').select('*')),q(sb.from('genres').select('*').order('naam'))]);
- const rm=Object.fromEntries(R.map(r=>[r.email.toLowerCase(),r.rechten])),RT=[['leden','Leden'],['donateurs','Donateurs'],['muziek','Muziek'],['beheer','Beheer']];
+ const[L,R,G,WKr,GE,RC]=await Promise.all([q(sb.from('leden').select('lidnr,voornaam,achternaam,email,actief,uitschrijfdatum').order('achternaam')),q(sb.from('rechten').select('*')),q(sb.from('groepen').select('naam').order('naam')),q(sb.from('wijken').select('*')),q(sb.from('genres').select('*').order('naam')),q(sb.from('relatie_categorieen').select('*').order('naam'))]);
+ const rm=Object.fromEntries(R.map(r=>[r.email.toLowerCase(),r.rechten])),RT=[['leden','Leden'],['donateurs','Donateurs'],['muziek','Muziek'],['relaties','Relaties'],['beheer','Beheer']];
  const act=L.filter(cur);
  main.innerHTML=`<h1>Beheer</h1><details open><summary>Gebruikers en rechten</summary><table><tr><th>Naam<th>E-mail${RT.map(r=>`<th>${r[1]}`).join('')}<th></tr>${act.map(x=>{const em=(x.email||'').toLowerCase();return `<tr><td>${e(x.achternaam)}, ${e(x.voornaam)}<td>${e(x.email)||'<i>geen e-mail: kan niet inloggen</i>'}${RT.map(r=>`<td>${em?`<input type=checkbox data-e="${e(em)}" data-r=${r[0]} ${(rm[em]||[]).includes(r[0])?'checked':''}>`:''}`).join('')}<td>${em?`<button class=s data-reset="${e(em)}">Reset wachtwoord</button>`:''}`}).join('')}</table></details>
  <details><summary>Groepen</summary><div id=gr></div><p><button id=ga>Groep toevoegen</button></p></details>
  <details><summary>Genres (muziekbibliotheek)</summary><div id=ge></div><p><button id=gea>Genre toevoegen</button></p></details>
  <details><summary>Uitgeverijen (muziekbibliotheek)</summary><p><button id=ue>Uitgeverijen beheren</button></p></details>
+ <details><summary>Relatiecategorieën</summary><div id=rc></div><p><button id=rca>Categorie toevoegen</button></p></details>
  <details><summary>Wijken en wijklopers</summary><div id=wk></div><p><button id=wa>Wijk toevoegen</button></p></details>
  <details><summary>Historie verwerken</summary><div id=hv></div></details>
- <details><summary>Gegevens downloaden (CSV)</summary><p class=sm>Elk bestand wordt apart gedownload en opent direct in Excel.</p><p class=bar><button class=s data-dl=l>Leden</button><button class=s data-dl=d>Donateurs (incl. historie)</button><button class=s data-dl=m>Muziekbibliotheek</button></p></details>`;
+ <details><summary>Gegevens downloaden (CSV)</summary><p class=sm>Elk bestand wordt apart gedownload en opent direct in Excel.</p><p class=bar><button class=s data-dl=l>Leden</button><button class=s data-dl=d>Donateurs (incl. historie)</button><button class=s data-dl=m>Muziekbibliotheek</button><button class=s data-dl=r>Relaties</button></p></details>`;
  const inp=[...main.querySelectorAll('input[data-e]')];
  inp.forEach(c=>c.onchange=async()=>{const em=c.dataset.e,set=inp.filter(x=>x.dataset.e==em&&x.checked).map(x=>x.dataset.r);try{await q(sb.from('rechten').upsert({email:em,rechten:set}));toast('Rechten opgeslagen')}catch(er){toast(er.message,1)}});
  main.querySelectorAll('[data-reset]').forEach(b=>b.onclick=async()=>{if(!confirm('Wachtwoord van '+b.dataset.reset+' resetten? Deze persoon moet een nieuw wachtwoord aanmaken.'))return;try{await q(sb.rpc('admin_reset_wachtwoord',{p_email:b.dataset.reset}));toast('Reset uitgevoerd. Laat de gebruiker "Eerste keer" gebruiken.')}catch(er){toast(er.message,1)}});
@@ -312,6 +325,10 @@ async function vBeheer(){
  main.querySelectorAll('[data-gr]').forEach(a=>a.onclick=ev=>{ev.preventDefault();const g=GE.find(x=>x.id==a.dataset.gr),n=prompt('Nieuwe naam',g.naam);n&&act2(()=>q(sb.from('genres').update({naam:n.trim()}).eq('id',g.id)))});
  main.querySelectorAll('[data-gd]').forEach(a=>a.onclick=ev=>{ev.preventDefault();confirm('Genre verwijderen? Dit kan alleen als geen muziekwerk dit genre nog heeft.')&&act2(()=>q(sb.from('genres').delete().eq('id',a.dataset.gd)))});
  $('#ue').onclick=()=>uitgBeheer();
+ $('#rc').innerHTML=RC.map(g=>`<span style="display:inline-block;background:#fff;border:1px solid var(--l);border-radius:6px;padding:4px 8px;margin:2px">${e(g.naam)} <a href=# data-rcr="${e(g.naam)}">✎</a> <a href=# data-rcd="${e(g.naam)}">✕</a></span>`).join('');
+ $('#rca').onclick=()=>{const n=prompt('Naam van de nieuwe categorie');n&&act2(()=>q(sb.from('relatie_categorieen').insert({naam:n.trim()})))};
+ main.querySelectorAll('[data-rcr]').forEach(a=>a.onclick=ev=>{ev.preventDefault();const n=prompt('Nieuwe naam',a.dataset.rcr);n&&act2(()=>q(sb.from('relatie_categorieen').update({naam:n.trim()}).eq('naam',a.dataset.rcr)))});
+ main.querySelectorAll('[data-rcd]').forEach(a=>a.onclick=ev=>{ev.preventDefault();confirm('Categorie verwijderen? Dit kan alleen als geen relatie deze categorie nog heeft.')&&act2(()=>q(sb.from('relatie_categorieen').delete().eq('naam',a.dataset.rcd)))});
  const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam])),WK=[...WKr].sort((a,b)=>String(a.wijknr).localeCompare(String(b.wijknr),'nl',{numeric:true}));
  const FW=[['wijknr','Wijknummer*','text'],['wijkloper','Wijkloper(s) (Ctrl/Cmd-klik voor meerdere)','multi',act.slice().sort(by).map(x=>[x.lidnr,x.achternaam+', '+x.voornaam])]];
  const ow=r=>form(r?'Wijk bewerken':'Nieuwe wijk',FW,r||{wijkloper:[]},async o=>{r?await q(sb.from('wijken').update(o).eq('wijknr',r.wijknr)):await q(sb.from('wijken').insert(o));vBeheer()},r&&(async()=>{await q(sb.from('wijken').delete().eq('wijknr',r.wijknr));vBeheer()}),'Wijk verwijderen? Dit kan alleen als er geen donateurs meer aan deze wijk gekoppeld zijn.');
@@ -322,6 +339,7 @@ async function vBeheer(){
   d:async()=>{const[D,H]=await Promise.all([q(sb.from('donateurs').select('*').order('wijknr').order('adres')),q(sb.from('donatie_historie').select('*'))]);
    const ys=[...new Set(H.map(x=>x.jaar))].sort(),m={};H.forEach(x=>m[x.donateur_id+'-'+x.jaar]=x.bedrag);
    csv('donateurs',D,[['Naamregel 1',r=>r.naam1],['Naamregel 2',r=>r.naam2],['Adres',r=>r.adres],['Huisnummer',r=>r.huisnr],['Toevoeging',r=>r.toevoeging],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Bijdrage',r=>num(r.bijdrage)],['Wijk',r=>r.wijknr],['Mededelingen',r=>r.mededelingen],...ys.map(y=>['Betaald '+y,r=>num(m[r.id+'-'+y])])])},
+  r:async()=>csv('relaties',await q(sb.from('relaties').select('*').order('relatienr')),[['Relatienr',r=>r.relatienr],['Naam',r=>r.naam],['Vervolg naam',r=>r.vervolgnaam],['Adres',r=>r.adres],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Telefoonnr',r=>r.telefoon],['E-mailadres',r=>r.email],['Relatie categorie',r=>(r.categorieen||[]).join(', ')],['Memo',r=>r.memo]]),
   m:async()=>{const[M,U,G,MG]=await Promise.all([q(sb.from('muziek').select('*').order('titel')),q(sb.from('uitgeverijen').select('id,naam')),q(sb.from('genres').select('*')),q(sb.from('muziek_genre').select('*'))]);
    const un=Object.fromEntries(U.map(u=>[u.id,u.naam])),gn=Object.fromEntries(G.map(g=>[g.id,g.naam])),gm={};MG.forEach(x=>(gm[x.muziek_id]??=[]).push(gn[x.genre_id]));
    csv('muziekbibliotheek',M,[['Archiefnr',r=>pad(r.id)],['Titel',r=>r.titel],['Componist',r=>r.componist],['Arrangeur',r=>r.arrangeur],['Genres',r=>(gm[r.id]||[]).sort().join(', ')],['Uitgeverij',r=>un[r.uitgeverij_id]],['Bestelnr',r=>r.bestelnr],['Opmerkingen',r=>r.opmerkingen]])}};
