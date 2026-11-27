@@ -10,6 +10,8 @@
 .login img{width:190px}.login label{text-align:left;margin-top:10px}.err{color:#b3261e;min-height:1em}
 input,select,textarea,button{font:inherit;padding:8px 10px;border:1px solid #b9c0d9;border-radius:6px;width:100%}
 input[type=checkbox]{width:auto}
+input.eurin{text-align:right;padding-left:28px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ctext x='2' y='15' font-family='Arial' font-size='14' fill='%23666'%3E%E2%82%AC%3C/text%3E%3C/svg%3E") no-repeat 8px center}
+input.eurin.bad{border-color:#b3261e;background-color:#fdecea}
 button{width:auto;background:var(--b);color:#fff;border:0;cursor:pointer}button.s{background:#fff;color:var(--b);border:1px solid var(--b)}button.d{background:#b3261e}
 .nt{font-size:12px;font-weight:700;letter-spacing:.03em;text-align:center;margin:12px 0 8px}nav img{cursor:pointer}.wel{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;text-align:center}.wel h1{font:400 clamp(44px,7vw,84px) system-ui,sans-serif;margin:0;color:#000}.wel img{width:min(300px,60vw);border-radius:50%;background:#fff}.wel p{font-style:italic;text-transform:uppercase;font-size:17px;margin:0}.shell{display:flex;min-height:100vh}nav{width:230px;background:var(--n);color:#fff;padding:14px;flex:none}
 nav img{width:100%;background:#fff;border-radius:50%}nav a{display:block;padding:9px 10px;color:#fff;border-radius:6px;cursor:pointer;margin-top:4px}nav a.on,nav a:hover{background:#ffffff26}
@@ -44,6 +46,11 @@ const fd=d=>d?d.split('-').reverse().join('-'):'';
 const today=()=>new Date().toLocaleDateString('nl-NL',{day:'2-digit',month:'2-digit',year:'numeric'});
 const q=async p=>{const{data,error}=await p;if(error)throw error;return data};
 // Supabase levert maximaal 1000 rijen per aanvraag: grote tabellen worden daarom in delen van 1000 opgehaald
+// bedragen in Nederlandse notatie: altijd 2 decimalen, komma als decimaalteken
+const eur2=v=>Number(v).toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pe=s=>{s=String(s??'').trim().replace(/^€\s*/,'');if(s==='')return null;if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');const n=Number(s);if(isNaN(n))throw Error('Ongeldig bedrag: '+s);if(n<0||n>999999.99)throw Error('Bedrag moet tussen € 0,00 en € 999.999,99 liggen');return n};
+// bedragvelden: netjes opmaken zodra je het veld verlaat (5 wordt 5,00); ongeldige invoer wordt rood
+document.addEventListener('focusout',ev=>{const el=ev.target;if(!el.classList||!el.classList.contains('eurin'))return;if(el.dataset.t===undefined)el.dataset.t=el.title;try{const n=pe(el.value);el.value=n==null?'':eur2(n);el.classList.remove('bad');el.title=el.dataset.t}catch(er){el.classList.add('bad');el.title=er.message}});
 const KEYS={donateurs:['id'],donatie_historie:['donateur_id','jaar'],muziek:['id'],muziek_genre:['muziek_id','genre_id'],relaties:['relatienr'],leden:['lidnr']};
 const qa=async(t,mk)=>{let all=[],f=0;for(;;){let b=mk();KEYS[t].forEach(k=>b=b.order(k));const r=await q(b.range(f,f+999));all=all.concat(r);if(r.length<1000)return all;f+=1000}};
 const by=(a,b)=>(a.achternaam||'').localeCompare(b.achternaam||'','nl')||(a.voornaam||'').localeCompare(b.voornaam||'','nl');
@@ -53,7 +60,7 @@ const allowed=r=>r=='rap'?can('leden')||can('donateurs')||can('muziek'):can(r);
 function toast(m,bad){const t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.textContent=m;(document.querySelector('dialog[open]')||document.body).append(t);setTimeout(()=>t.remove(),3500)}
 const YR=new Date().getFullYear(),STD=10; // standaard donateursbijdrage; in de historie betekent een leeg bedrag: standaardbedrag betaald
 
-const hr=r=>{const y=r.jaar??YR;let o='';for(let i=Math.min(1995,y);i<=Math.max(YR,y);i++)o+=`<option ${i==y?'selected':''}>${i}</option>`;return `<div class=hr data-bw="${e(r.betaalwijze||'')}"><select>${o}</select><input type=number step=any placeholder="Bedrag € (leeg = standaard)" title="Alleen invullen als het bedrag afwijkt van het standaardbedrag" value="${r.bedrag??''}"><button type=button class=s title="Dit jaar verwijderen" onclick="this.parentElement.remove()">✕</button></div>`};
+const hr=r=>{const y=r.jaar??YR;let o='';for(let i=Math.min(1995,y);i<=Math.max(YR,y);i++)o+=`<option ${i==y?'selected':''}>${i}</option>`;return `<div class=hr data-bw="${e(r.betaalwijze||'')}"><select>${o}</select><input type=text class=eurin inputmode=decimal placeholder="Bedrag (leeg = standaard)" title="Alleen invullen als het bedrag afwijkt van het standaardbedrag" value="${r.bedrag==null?'':eur2(r.bedrag)}"><button type=button class=s title="Dit jaar verwijderen" onclick="this.parentElement.remove()">✕</button></div>`};
 
 let idleT;const idle=()=>{clearTimeout(idleT);idleT=setTimeout(async()=>{if(!$('nav'))return;await sb.auth.signOut();login('Je bent automatisch uitgelogd na 30 minuten zonder activiteit.')},18e5)};
 ['click','keydown','touchstart','mousemove'].forEach(v=>addEventListener(v,idle,{passive:true}));
@@ -105,6 +112,7 @@ function form(title,F,v,save,del,msg){
   else if(t=='ro')i=`<input name="${k}" value="${e(x)}" readonly>`;
   else if(t=='chk')i=o.map(s=>`<span style="margin-right:14px"><input type=checkbox name="${k}" value="${e(s)}" ${(x||[]).includes(s)?'checked':''}> ${e(s)}</span>`).join('');
   else if(t=='hist')i=`<div class=hist data-k="${k}">${(x||[]).map(hr).join('')}</div><button type=button class=s onclick="this.previousElementSibling.insertAdjacentHTML('beforeend',hr({}))">+ Jaar toevoegen</button>`;
+  else if(t=='eur')i=`<input name="${k}" class=eurin type=text inputmode=decimal value="${x==null||x===''?'':eur2(x)}" ${r}>`;
   else i=`<input name="${k}" type="${t}" value="${e(x)}" ${t=='number'?'step=any':''} ${r}>`;
   const tg=['hist','chk'].includes(t)?'div':'label';
   if(t=='chk')return `<div class="lb full chkrow"><span class=cl>${e(l)}</span><span class=co>${i}</span></div>`;
@@ -117,11 +125,11 @@ function form(title,F,v,save,del,msg){
  if(del)d.querySelector('#del').onclick=async()=>{if(!confirm(msg||'Weet je zeker dat je dit wilt verwijderen?'))return;try{await del();d.remove()}catch(er){toast(er.message,1)}};
  d.querySelector('form').onsubmit=async ev=>{ev.preventDefault();const o={};
   F.forEach(([k,,t])=>{
-   if(t=='hist'){o[k]=[...d.querySelector(`.hist[data-k="${k}"]`).children].map(r=>{const[a,b]=r.querySelectorAll('select,input');return {jaar:+a.value,bedrag:b.value===''||+b.value===STD?null:+b.value,betaalwijze:r.dataset.bw||null}});return}
+   if(t=='hist'){o[k]=[...d.querySelector(`.hist[data-k="${k}"]`).children].map(r=>{const[a,b]=r.querySelectorAll('select,input');return {jaar:+a.value,bedrag:(()=>{const n=pe(b.value);return n==null||n===STD?null:n})(),betaalwijze:r.dataset.bw||null}});return}
    if(t=='chk'){o[k]=[...d.querySelectorAll(`input[name="${k}"]:checked`)].map(x=>x.value);return}
    const el=d.querySelector(`[name="${k}"]`);
    if(t=='ro')return;if(t=='bool')o[k]=el.checked;else if(t=='multi')o[k]=[...el.selectedOptions].map(x=>+x.value);
-   else{o[k]=el.value.trim()||null;if(t=='number'&&o[k]!=null)o[k]=+o[k]}});
+   else if(t=='eur')o[k]=pe(el.value);else{o[k]=el.value.trim()||null;if(t=='number'&&o[k]!=null)o[k]=+o[k]}});
   try{await save(o);d.remove();toast('Opgeslagen')}catch(er){toast(er.message,1)}};
 }
 let lidF=null;
@@ -159,7 +167,7 @@ async function vDon(){
  // volgorde: wijknummer als getal (1,2,3…11), daarna straat, oneven/even en huisnummer; adressen zonder wijk onderaan
  D.sort((a,b)=>((a.wijknr==null)-(b.wijknr==null))||String(a.wijknr).localeCompare(String(b.wijknr),'nl',{numeric:true})||dcmp(a,b));
  const LH={};H.forEach(x=>{if(!LH[x.donateur_id]||x.jaar>LH[x.donateur_id].jaar)LH[x.donateur_id]=x}); // laatst bekende jaar per donateur
- const F=[['naam1','Naamregel 1*','text'],['naam2','Naamregel 2','text'],['adres','Adres*','text'],['huisnr','Huisnummer*','number'],['toevoeging','Toevoeging huisnummer','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['bijdrage','Donateursbijdrage (€)','number',null,'Leeg laten = geen donateur op dit adres'],['lage_bijdrage','Gift','bool'],['wijknr','Wijknummer*','sel',W,'Wijken en wijklopers beheer je onder Beheer'],['mededelingen','Mededelingen','area'],['hist','Historie: betaalde bijdrage per jaar','hist']];
+ const F=[['naam1','Naamregel 1*','text'],['naam2','Naamregel 2','text'],['adres','Adres*','text'],['huisnr','Huisnummer*','number'],['toevoeging','Toevoeging huisnummer','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['bijdrage','Donateursbijdrage (€)','eur',null,'Leeg laten = geen donateur op dit adres'],['lage_bijdrage','Gift','bool'],['wijknr','Wijknummer*','sel',W,'Wijken en wijklopers beheer je onder Beheer'],['mededelingen','Mededelingen','area'],['hist','Historie: betaalde bijdrage per jaar','hist']];
  const open=r=>form(r?'Donateur bewerken':'Nieuwe donateur',F,r?{...r,hist:H.filter(h=>h.donateur_id==r.id)}:{hist:[],bijdrage:10},async o=>{
   const h=o.hist;delete o.hist;let id=r?.id;
   if(r)await q(sb.from('donateurs').update(o).eq('id',id));else id=(await q(sb.from('donateurs').insert(o).select('id').single())).id;
@@ -167,7 +175,7 @@ async function vDon(){
   if(h.length)await q(sb.from('donatie_historie').insert(h.map(x=>({donateur_id:id,jaar:x.jaar,bedrag:x.bedrag,betaalwijze:x.betaalwijze}))));
   vDon()},r&&(async()=>{await q(sb.from('donateurs').delete().eq('id',r.id));vDon()}),'Let op: ook de volledige historie van deze donateur wordt verwijderd. Is de donateur gestopt? Maak dan het veld Donateursbijdrage leeg, dan blijft de historie bewaard. Toch verwijderen?');
  main.innerHTML=head('Donateurs','Nieuwe donateur');$('#n').onclick=()=>open();
- list(D,[['Wijk',r=>r.wijknr],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Woonplaats',r=>r.woonplaats],['Laatste bijdrage',r=>{if(!(r.bijdrage>0))return 'geen donateur';const x=LH[r.id];return x?'€ '+Number(x.bedrag??STD).toFixed(2)+' ('+x.jaar+')':'nog niet betaald'}],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
+ list(D,[['Wijk',r=>r.wijknr],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Woonplaats',r=>r.woonplaats],['Laatste bijdrage',r=>{if(!(r.bijdrage>0))return 'geen donateur';const x=LH[r.id];return x?'€ '+eur2(x.bedrag??STD)+' ('+x.jaar+')':'nog niet betaald'}],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
 }
 
 // ===== Historie verwerken =====
@@ -181,12 +189,12 @@ async function vHist(){
   const[D,H]=await Promise.all([qa('donateurs',()=>sb.from('donateurs').select('*')),qa('donatie_historie',()=>sb.from('donatie_historie').select('*').eq('jaar',Y))]);
   const hm=Object.fromEntries(H.map(x=>[x.donateur_id,x]));
   const R=D.filter(d=>d.bijdrage>0&&(!w||d.wijknr==w)).sort((a,b)=>String(a.wijknr).localeCompare(String(b.wijknr),'nl',{numeric:true})||dcmp(a,b));
-  $('#hb').innerHTML=R.length?`<div class=bar><button id=ha class=s>Alles aanvinken</button><button id=hs>Opslaan in historie ${Y}</button></div><table><tr><th>Betaald<th>Wijk<th>Adres<th>Naam<th>Bedrag (€)</tr>${R.map(d=>{const x=hm[d.id];return `<tr data-id=${d.id}><td><input type=checkbox class=ck ${x?'checked':''}><td>${e(d.wijknr)}<td>${e(d.adres)} ${d.huisnr??''}${e(d.toevoeging)}<td>${e(d.naam1)}<td><input type=number step=any class=bd style="width:90px" value="${x?(x.bedrag??STD):d.bijdrage}">`}).join('')}</table>`:'<p>Geen donateurs gevonden.</p>';
+  $('#hb').innerHTML=R.length?`<div class=bar><button id=ha class=s>Alles aanvinken</button><button id=hs>Opslaan in historie ${Y}</button></div><table><tr><th>Betaald<th>Wijk<th>Adres<th>Naam<th>Bedrag (€)</tr>${R.map(d=>{const x=hm[d.id];return `<tr data-id=${d.id}><td><input type=checkbox class=ck ${x?'checked':''}><td>${e(d.wijknr)}<td>${e(d.adres)} ${d.huisnr??''}${e(d.toevoeging)}<td>${e(d.naam1)}<td><input type=text inputmode=decimal class="bd eurin" style="width:100px" value="${eur2(x?(x.bedrag??STD):d.bijdrage)}">`}).join('')}</table>`:'<p>Geen donateurs gevonden.</p>';
   if(!R.length)return;
   $('#ha').onclick=()=>$('#hv').querySelectorAll('.ck').forEach(c=>c.checked=true);
   $('#hs').onclick=async()=>{try{const up=[],del=[];
    $('#hv').querySelectorAll('tr[data-id]').forEach(r=>{const id=+r.dataset.id,b=r.querySelector('.bd').value;
-    if(r.querySelector('.ck').checked){up.push({donateur_id:id,jaar:Y,bedrag:b===''||+b===STD?null:+b})}
+    if(r.querySelector('.ck').checked){up.push({donateur_id:id,jaar:Y,bedrag:(()=>{const n=pe(b);return n==null||n===STD?null:n})()})}
     else if(hm[id])del.push(id)});
    if(up.length)await q(sb.from('donatie_historie').upsert(up,{onConflict:'donateur_id,jaar'}));
    if(del.length)await q(sb.from('donatie_historie').delete().eq('jaar',Y).in('donateur_id',del));
@@ -255,7 +263,7 @@ function rDuur(L,Y){
 function rDon(D,H,L,wijk,Y,WK){
  const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam])),amt={};H.forEach(h=>amt[h.donateur_id+'-'+h.jaar]=h.bedrag);const paid=(id,y)=>(id+'-'+y) in amt;
  const par=n=>(n||0)%2?1:0,yrs=[Y-5,Y-4,Y-3,Y-2,Y-1],bx=k=>`<span class="bx${k?' k':''}"></span>`,dots='.........';
- const euro=v=>'€ '+Number(v).toLocaleString('nl-NL',{minimumFractionDigits:2});
+ const euro=v=>'€ '+eur2(v);
  const cmp=(a,b)=>(a.adres||'').localeCompare(b.adres||'','nl')||par(a.huisnr)-par(b.huisnr)||(a.huisnr||0)-(b.huisnr||0)||(a.toevoeging||'').localeCompare(b.toevoeging||'','nl');
  const ft=`<div class=ft><div class=fl></div><div class=ftt><b>Ruimte voor aanvullingen</b><i>: duidelijk in blokletters invullen!</i></div><div class="fg fh"><span>Naam:</span><span>Adres + huisnr.:</span><b>${Y}</b><span class=w>Waarde<br>${Y}</span><span class=bw>Betaalwijze<br>Cash&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;QR</span></div>${[0,1,2].map(()=>`<div class="fg fr"><i></i><i></i>${bx()}<i></i>${bx()}${bx()}</div>`).join('')}</div>`;
  const W={};D.filter(d=>!wijk||d.wijknr==wijk).forEach(d=>(W[d.wijknr??'-']??=[]).push(d));
@@ -308,7 +316,7 @@ function csv(naam,rows,cols){
  const c=v=>{v=String(v??'');if(/^[=+@\t\r]/.test(v)||/^-[^\d]/.test(v))v="'"+v;return /[;"\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
  const t='\ufeff'+[cols.map(x=>c(x[0])).join(';'),...rows.map(r=>cols.map(x=>c(x[1](r))).join(';'))].join('\r\n');
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv;charset=utf-8'}));a.download=`${naam}_${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-const num=v=>v==null?'':String(v).replace('.',',');
+const num=v=>v==null?'':eur2(v);
 async function vBeheer(vers){
  // na een actie blijven dezelfde onderdelen open staan; bij openen vanuit het menu staat alles dicht
  const was=!vers&&main.querySelector('#gr')?[...main.querySelectorAll('details[open]>summary')].map(s=>s.textContent):[];
