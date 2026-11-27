@@ -33,7 +33,7 @@ label,.lb{font-size:13px;color:#444;display:block}.hr{display:flex;gap:6px;margi
 <script>
 if(top!==self){document.body.innerHTML='';throw new Error('Niet toegestaan in een frame')}
 // ===== CONFIGURATIE: vul in vanuit Supabase > Project Settings > API =====
-const CFG={url:'https://JOUW-PROJECT.supabase.co',key:'JOUW-ANON-PUBLIC-KEY'};
+const CFG={url:'https://ixybybmolnkqkdabyxcj.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4eWJ5Ym1vbG5rcWtkYWJ5eGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3Mzg2MzcsImV4cCI6MjEwODMxNDYzN30.AUyljK5NrduOZHhkdfexUjHA5Lad2nm1QqDp7QSFlD8'};
 const NAAM='Muziekvereniging Constantia, Werkhoven';
 const OK=!CFG.url.includes('JOUW'),sb=OK?supabase.createClient(CFG.url,CFG.key,{auth:{storage:window.sessionStorage}}):null;
 const $=s=>document.querySelector(s),app=$('#app');let main,me={email:'',rechten:[]};
