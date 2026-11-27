@@ -46,8 +46,9 @@ const PW=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/;
 const can=r=>me.rechten.includes(r)||me.rechten.includes('beheer');
 const allowed=r=>r=='rap'?can('leden')||can('donateurs')||can('muziek'):can(r);
 function toast(m,bad){const t=document.createElement('div');t.className='toast'+(bad?' bad':'');t.textContent=m;(document.querySelector('dialog[open]')||document.body).append(t);setTimeout(()=>t.remove(),3500)}
-const YR=new Date().getFullYear();
-const hr=r=>{const y=r.jaar??YR;let o='';for(let i=Math.min(1995,y);i<=Math.max(YR,y);i++)o+=`<option ${i==y?'selected':''}>${i}</option>`;return `<div class=hr data-bw="${e(r.betaalwijze||'')}"><select>${o}</select><input type=number step=any placeholder="Bedrag €" value="${r.bedrag??''}"></div>`};
+const YR=new Date().getFullYear(),STD=10; // standaard donateursbijdrage; in de historie betekent een leeg bedrag: standaardbedrag betaald
+
+const hr=r=>{const y=r.jaar??YR;let o='';for(let i=Math.min(1995,y);i<=Math.max(YR,y);i++)o+=`<option ${i==y?'selected':''}>${i}</option>`;return `<div class=hr data-bw="${e(r.betaalwijze||'')}"><select>${o}</select><input type=number step=any placeholder="Bedrag € (leeg = standaard)" title="Alleen invullen als het bedrag afwijkt van het standaardbedrag" value="${r.bedrag??''}"><button type=button class=s title="Dit jaar verwijderen" onclick="this.parentElement.remove()">✕</button></div>`};
 
 let idleT;const idle=()=>{clearTimeout(idleT);idleT=setTimeout(async()=>{if(!$('nav'))return;await sb.auth.signOut();login('Je bent automatisch uitgelogd na 30 minuten zonder activiteit.')},18e5)};
 ['click','keydown','touchstart','mousemove'].forEach(v=>addEventListener(v,idle,{passive:true}));
@@ -111,7 +112,7 @@ function form(title,F,v,save,del,msg){
  if(del)d.querySelector('#del').onclick=async()=>{if(!confirm(msg||'Weet je zeker dat je dit wilt verwijderen?'))return;try{await del();d.remove()}catch(er){toast(er.message,1)}};
  d.querySelector('form').onsubmit=async ev=>{ev.preventDefault();const o={};
   F.forEach(([k,,t])=>{
-   if(t=='hist'){o[k]=[...d.querySelector(`.hist[data-k="${k}"]`).children].map(r=>{const[a,b]=r.querySelectorAll('select,input');return b.value===''?null:{jaar:+a.value,bedrag:+b.value,betaalwijze:r.dataset.bw||null}}).filter(Boolean);return}
+   if(t=='hist'){o[k]=[...d.querySelector(`.hist[data-k="${k}"]`).children].map(r=>{const[a,b]=r.querySelectorAll('select,input');return {jaar:+a.value,bedrag:b.value===''||+b.value===STD?null:+b.value,betaalwijze:r.dataset.bw||null}});return}
    if(t=='chk'){o[k]=[...d.querySelectorAll(`input[name="${k}"]:checked`)].map(x=>x.value);return}
    const el=d.querySelector(`[name="${k}"]`);
    if(t=='ro')return;if(t=='bool')o[k]=el.checked;else if(t=='multi')o[k]=[...el.selectedOptions].map(x=>+x.value);
@@ -150,6 +151,7 @@ async function vDon(){
  const[D,H,L,WR]=await Promise.all([q(sb.from('donateurs').select('*').order('wijknr').order('adres').order('huisnr')),q(sb.from('donatie_historie').select('*').order('jaar',{ascending:false})),q(sb.rpc('lidnamen')),q(sb.from('wijken').select('*'))]);
  const WK=Object.fromEntries(WR.map(x=>[x.wijknr,x.wijkloper])),W=WR.map(x=>x.wijknr).sort((a,b)=>String(a).localeCompare(String(b),'nl',{numeric:true}));
  const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam]));
+ const LH={};H.forEach(x=>{if(!LH[x.donateur_id]||x.jaar>LH[x.donateur_id].jaar)LH[x.donateur_id]=x}); // laatst bekende jaar per donateur
  const F=[['naam1','Naamregel 1*','text'],['naam2','Naamregel 2','text'],['adres','Adres*','text'],['huisnr','Huisnummer*','number'],['toevoeging','Toevoeging huisnummer','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['bijdrage','Donateursbijdrage (€)','number',null,'Leeg laten = geen donateur op dit adres'],['lage_bijdrage','Lagere bijdrage (niet uitnodigen voor donateursconcerten)','bool'],['wijknr','Wijknummer*','sel',W,'Wijken en wijklopers beheer je onder Beheer'],['mededelingen','Mededelingen','area'],['hist','Historie: betaalde bijdrage per jaar','hist']];
  const open=r=>form(r?'Donateur bewerken':'Nieuwe donateur',F,r?{...r,hist:H.filter(h=>h.donateur_id==r.id)}:{hist:[],bijdrage:10},async o=>{
   const h=o.hist;delete o.hist;let id=r?.id;
@@ -158,7 +160,7 @@ async function vDon(){
   if(h.length)await q(sb.from('donatie_historie').insert(h.map(x=>({donateur_id:id,jaar:x.jaar,bedrag:x.bedrag,betaalwijze:x.betaalwijze}))));
   vDon()},r&&(async()=>{await q(sb.from('donateurs').delete().eq('id',r.id));vDon()}),'Let op: ook de volledige historie van deze donateur wordt verwijderd. Is de donateur gestopt? Maak dan het veld Donateursbijdrage leeg, dan blijft de historie bewaard. Toch verwijderen?');
  main.innerHTML=head('Donateurs','Nieuwe donateur');$('#n').onclick=()=>open();
- list(D,[['Wijk',r=>r.wijknr],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Bijdrage',r=>r.bijdrage>0?'€ '+Number(r.bijdrage).toFixed(2):'geen donateur'],['Concert',r=>r.bijdrage>0?(r.lage_bijdrage?'niet uitnodigen':'ja'):''],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
+ list(D,[['Wijk',r=>r.wijknr],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Laatste bijdrage',r=>{if(!(r.bijdrage>0))return 'geen donateur';const x=LH[r.id];return x?'€ '+Number(x.bedrag??STD).toFixed(2)+' ('+x.jaar+')':'nog niet betaald'}],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
 }
 
 // ===== Historie verwerken =====
@@ -167,17 +169,17 @@ async function vHist(){
  const D0=await q(sb.from('donateurs').select('wijknr'));
  const W=[...new Set(D0.map(d=>d.wijknr).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'nl',{numeric:true}));
  let ys='';for(let y=YR;y>=1995;y--)ys+=`<option>${y}</option>`;
- $('#hv').innerHTML=`<div class=bar><select id=hy>${ys}</select><select id=hw><option value="">Alle wijken</option>${W.map(w=>`<option>${e(w)}</option>`).join('')}</select><button id=ht>Tonen</button></div><p class=sm>Vink de donateurs aan die betaald hebben en pas zo nodig het bedrag aan. Alleen aangevinkte donateurs worden naar de historie weggeschreven. Adressen zonder donateursbijdrage staan hier niet bij.</p><div id=hb></div>`;
+ $('#hv').innerHTML=`<div class=bar><select id=hy>${ys}</select><select id=hw><option value="">Alle wijken</option>${W.map(w=>`<option>${e(w)}</option>`).join('')}</select><button id=ht>Tonen</button></div><p class=sm>Vink de donateurs aan die betaald hebben en pas het bedrag alleen aan als het afwijkt van het standaardbedrag (€ 10). Het standaardbedrag wordt in de historie niet als bedrag bewaard. Alleen aangevinkte donateurs worden naar de historie weggeschreven. Adressen zonder donateursbijdrage staan hier niet bij.</p><div id=hb></div>`;
  $('#ht').onclick=async()=>{try{const Y=+$('#hy').value,w=$('#hw').value;
   const[D,H]=await Promise.all([q(sb.from('donateurs').select('*')),q(sb.from('donatie_historie').select('*').eq('jaar',Y))]);
   const hm=Object.fromEntries(H.map(x=>[x.donateur_id,x]));
   const R=D.filter(d=>d.bijdrage>0&&(!w||d.wijknr==w)).sort((a,b)=>String(a.wijknr).localeCompare(String(b.wijknr),'nl',{numeric:true})||dcmp(a,b));
-  $('#hb').innerHTML=R.length?`<div class=bar><button id=ha class=s>Alles aanvinken</button><button id=hs>Opslaan in historie ${Y}</button></div><table><tr><th>Betaald<th>Wijk<th>Adres<th>Naam<th>Bedrag (€)</tr>${R.map(d=>{const x=hm[d.id];return `<tr data-id=${d.id}><td><input type=checkbox class=ck ${x?'checked':''}><td>${e(d.wijknr)}<td>${e(d.adres)} ${d.huisnr??''}${e(d.toevoeging)}<td>${e(d.naam1)}<td><input type=number step=any class=bd style="width:90px" value="${x?x.bedrag:d.bijdrage}">`}).join('')}</table>`:'<p>Geen donateurs gevonden.</p>';
+  $('#hb').innerHTML=R.length?`<div class=bar><button id=ha class=s>Alles aanvinken</button><button id=hs>Opslaan in historie ${Y}</button></div><table><tr><th>Betaald<th>Wijk<th>Adres<th>Naam<th>Bedrag (€)</tr>${R.map(d=>{const x=hm[d.id];return `<tr data-id=${d.id}><td><input type=checkbox class=ck ${x?'checked':''}><td>${e(d.wijknr)}<td>${e(d.adres)} ${d.huisnr??''}${e(d.toevoeging)}<td>${e(d.naam1)}<td><input type=number step=any class=bd style="width:90px" value="${x?(x.bedrag??STD):d.bijdrage}">`}).join('')}</table>`:'<p>Geen donateurs gevonden.</p>';
   if(!R.length)return;
   $('#ha').onclick=()=>$('#hv').querySelectorAll('.ck').forEach(c=>c.checked=true);
   $('#hs').onclick=async()=>{try{const up=[],del=[];
    $('#hv').querySelectorAll('tr[data-id]').forEach(r=>{const id=+r.dataset.id,b=r.querySelector('.bd').value;
-    if(r.querySelector('.ck').checked){if(b==='')throw Error('Vul een bedrag in bij '+r.children[3].textContent);up.push({donateur_id:id,jaar:Y,bedrag:+b})}
+    if(r.querySelector('.ck').checked){up.push({donateur_id:id,jaar:Y,bedrag:b===''||+b===STD?null:+b})}
     else if(hm[id])del.push(id)});
    if(up.length)await q(sb.from('donatie_historie').upsert(up,{onConflict:'donateur_id,jaar'}));
    if(del.length)await q(sb.from('donatie_historie').delete().eq('jaar',Y).in('donateur_id',del));
@@ -244,7 +246,7 @@ function rDuur(L,Y){
   if(j>=0)(g[j]??=[]).push(x)});
  return `<h1 class=rt>${NAAM}</h1><h2 class=rs>Lidmaatschapsduur ${Y}</h2><table><tr><th><th>Voornaam<th>Achternaam<th>Lid sinds</tr>${Object.keys(g).sort((a,b)=>a-b).map(j=>`<tr class="gh${JUB[j]?' jb':''}"><td colspan=4>${j.replace('.',',')} JAAR${JUB[j]?' — jubileum: '+JUB[j]:''}`+g[j].sort(by).map(x=>`<tr><td><td>${e(x.voornaam)}<td>${e(x.achternaam)}<td>${fd(x.lid_sinds)}`).join('')).join('')}</table>`}
 function rDon(D,H,L,wijk,Y,WK){
- const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam])),amt={};H.forEach(h=>amt[h.donateur_id+'-'+h.jaar]=h.bedrag);
+ const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam])),amt={};H.forEach(h=>amt[h.donateur_id+'-'+h.jaar]=h.bedrag);const paid=(id,y)=>(id+'-'+y) in amt;
  const par=n=>(n||0)%2?1:0,yrs=[Y-5,Y-4,Y-3,Y-2,Y-1],bx=k=>`<span class="bx${k?' k':''}"></span>`,dots='.........';
  const euro=v=>'€ '+Number(v).toLocaleString('nl-NL',{minimumFractionDigits:2});
  const cmp=(a,b)=>(a.adres||'').localeCompare(b.adres||'','nl')||par(a.huisnr)-par(b.huisnr)||(a.huisnr||0)-(b.huisnr||0)||(a.toevoeging||'').localeCompare(b.toevoeging||'','nl');
@@ -255,7 +257,7 @@ function rDon(D,H,L,wijk,Y,WK){
   const st={};ds.forEach(d=>(st[d.adres||'']??=[]).push(d));
   return `<table class="dn${i?' pb':''}"><tbody><tr><td colspan=14><div class=hd><img src=logo.png alt=""><div><h1 class=rt style="text-align:left">Donateursaktie ${Y}</h1><p><b>Wijk nr.: ${e(w)}</b> &nbsp;&nbsp; <b>Uitvoerenden: ${e(lp)}</b></p></div></div>
   <p>Eventuele aanvullingen en/of opmerkingen duidelijk in blokletters invullen!</p></td></tr>
-  ${Object.entries(st).map(([s,r])=>`<tr><td colspan=14 class=st>${e(s)}<tr class=ch><th colspan=9><th colspan=2>Afwijkende waarden<th colspan=3>Betaalwijze<tr class=ch><th style="text-align:left">Huisnr.<th style="text-align:left;width:22%">Naam<th style="text-align:left;width:22%">Vervolgnaam${yrs.map(y=>`<th class=h>${y}`).join('')}<th><b style="font-size:12px">${Y}</b><th>${Y-1}<th>${Y}<th>Cash<th>QR<th>Bank`+r.map(d=>{const v=amt[d.id+'-'+(Y-1)];return `<tr><td>${d.huisnr??''}${e(d.toevoeging)}<td>${e(d.naam1)}<td>${e(d.naam2)}${yrs.map(y=>`<td class="c h">${bx(amt[d.id+'-'+y]>0)}`).join('')}<td class=c>${bx()}<td class=c>${v!=null?euro(v):dots}<td class=c>${dots}<td class=c>${bx()}<td class=c>${bx()}<td class=c>${bx()}`}).join('')).join('')}</tbody><tfoot><tr><td colspan=14><div class=fs></div></table>`}).join('')+ft}
+  ${Object.entries(st).map(([s,r])=>`<tr><td colspan=14 class=st>${e(s)}<tr class=ch><th colspan=9><th colspan=2>Afwijkende waarden<th colspan=3>Betaalwijze<tr class=ch><th style="text-align:left">Huisnr.<th style="text-align:left;width:22%">Naam<th style="text-align:left;width:22%">Vervolgnaam${yrs.map(y=>`<th class=h>${y}`).join('')}<th><b style="font-size:12px">${Y}</b><th>${Y-1}<th>${Y}<th>Cash<th>QR<th>Bank`+r.map(d=>{const v=amt[d.id+'-'+(Y-1)];return `<tr><td>${d.huisnr??''}${e(d.toevoeging)}<td>${e(d.naam1)}<td>${e(d.naam2)}${yrs.map(y=>`<td class="c h">${bx(paid(d.id,y))}`).join('')}<td class=c>${bx()}<td class=c>${v!=null?euro(v):dots}<td class=c>${dots}<td class=c>${bx()}<td class=c>${bx()}<td class=c>${bx()}`}).join('')).join('')}</tbody><tfoot><tr><td colspan=14><div class=fs></div></table>`}).join('')+ft}
 function rStick(D){
  const par=n=>(n||0)%2?1:0,tv=t=>!t?'':/^[A-Za-z]$/.test(t)?t:' '+t;
  const cmp=(a,b)=>par(a.huisnr)-par(b.huisnr)||(a.huisnr||0)-(b.huisnr||0)||(a.toevoeging||'').localeCompare(b.toevoeging||'','nl');
@@ -342,7 +344,7 @@ async function vBeheer(vers){
   l:async()=>csv('leden',await q(sb.from('leden').select('*').order('lidnr')),[['Lidnr',r=>r.lidnr],['Voornaam',r=>r.voornaam],['Achternaam',r=>r.achternaam],['E-mail',r=>r.email],['Adres',r=>r.adres],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Telefoon',r=>r.telefoon],['Geboortedatum',r=>r.geboortedatum],['Geslacht',r=>r.geslacht],['Lid sinds',r=>r.lid_sinds],['Instrument',r=>r.instrument],['Sectie',r=>r.sectie],['Docent',r=>r.docent],['Groepen',r=>(r.groepen||[]).join(', ')],['Ingeschreven',r=>r.actief?'ja':'nee'],['Uitschrijving per',r=>r.uitschrijfdatum]]),
   d:async()=>{const[D,H]=await Promise.all([q(sb.from('donateurs').select('*').order('wijknr').order('adres')),q(sb.from('donatie_historie').select('*'))]);
    const ys=[...new Set(H.map(x=>x.jaar))].sort(),m={};H.forEach(x=>m[x.donateur_id+'-'+x.jaar]=x.bedrag);
-   csv('donateurs',D,[['Naamregel 1',r=>r.naam1],['Naamregel 2',r=>r.naam2],['Adres',r=>r.adres],['Huisnummer',r=>r.huisnr],['Toevoeging',r=>r.toevoeging],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Bijdrage',r=>num(r.bijdrage)],['Lagere bijdrage',r=>r.lage_bijdrage?'ja':''],['Wijk',r=>r.wijknr],['Mededelingen',r=>r.mededelingen],...ys.map(y=>['Betaald '+y,r=>num(m[r.id+'-'+y])])])},
+   csv('donateurs',D,[['Naamregel 1',r=>r.naam1],['Naamregel 2',r=>r.naam2],['Adres',r=>r.adres],['Huisnummer',r=>r.huisnr],['Toevoeging',r=>r.toevoeging],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Bijdrage',r=>num(r.bijdrage)],['Lagere bijdrage',r=>r.lage_bijdrage?'ja':''],['Wijk',r=>r.wijknr],['Mededelingen',r=>r.mededelingen],...ys.map(y=>['Betaald '+y,r=>(r.id+'-'+y) in m?(m[r.id+'-'+y]==null?'standaard':num(m[r.id+'-'+y])):''])])},
   r:async()=>csv('relaties',await q(sb.from('relaties').select('*').order('relatienr')),[['Relatienr',r=>r.relatienr],['Naam',r=>r.naam],['Vervolg naam',r=>r.vervolgnaam],['Adres',r=>r.adres],['Postcode',r=>r.postcode],['Woonplaats',r=>r.woonplaats],['Telefoonnr',r=>r.telefoon],['E-mailadres',r=>r.email],['Relatie categorie',r=>(r.categorieen||[]).join(', ')],['Memo',r=>r.memo]]),
   m:async()=>{const[M,U,G,MG]=await Promise.all([q(sb.from('muziek').select('*').order('titel')),q(sb.from('uitgeverijen').select('id,naam')),q(sb.from('genres').select('*')),q(sb.from('muziek_genre').select('*'))]);
    const un=Object.fromEntries(U.map(u=>[u.id,u.naam])),gn=Object.fromEntries(G.map(g=>[g.id,g.naam])),gm={};MG.forEach(x=>(gm[x.muziek_id]??=[]).push(gn[x.genre_id]));
