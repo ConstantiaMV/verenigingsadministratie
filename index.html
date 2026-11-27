@@ -71,7 +71,7 @@ function login(msg='',first=false){lidF=null;relF=null;
   }catch(er){const m=er.message||'';login(m.includes('Invalid login')?'Onjuist e-mailadres of wachtwoord.':m.includes('already')?'Dit account bestaat al. Log in, of vraag de beheerder om een reset.':m.includes('Database error')?'Dit e-mailadres kan niet worden geactiveerd. Controleer het adres of neem contact op met de beheerder.':m,first)}}}
 
 // ===== Shell + menu =====
-const M=[['leden','Leden','leden',()=>vLeden()],['don','Donateurs','donateurs',()=>vDon()],['rel','Relaties','relaties',()=>vRel()],['mus','Muziekbibliotheek','muziek',()=>vMus()],['rap','Rapporten','rap',()=>vRap()],['beh','Beheer','beheer',()=>vBeheer()]];
+const M=[['leden','Leden','leden',()=>vLeden()],['don','Donateurs','donateurs',()=>vDon()],['rel','Relaties','relaties',()=>vRel()],['mus','Muziekbibliotheek','muziek',()=>vMus()],['rap','Rapporten','rap',()=>vRap()],['beh','Beheer','beheer',()=>vBeheer(true)]];
 async function boot(email){
  try{
   if(!await q(sb.rpc('is_lid_email',{p_email:email}))){await sb.auth.signOut();return login('Dit e-mailadres komt niet (meer) voor in de ledenadministratie.')}
@@ -300,11 +300,14 @@ function csv(naam,rows,cols){
  const t='\ufeff'+[cols.map(x=>c(x[0])).join(';'),...rows.map(r=>cols.map(x=>c(x[1](r))).join(';'))].join('\r\n');
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv;charset=utf-8'}));a.download=`${naam}_${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 const num=v=>v==null?'':String(v).replace('.',',');
-async function vBeheer(){
+async function vBeheer(vers){
+ // na een actie blijven dezelfde onderdelen open staan; bij openen vanuit het menu staat alles dicht
+ const was=!vers&&main.querySelector('#gr')?[...main.querySelectorAll('details[open]>summary')].map(s=>s.textContent):[];
+ const sy=main.scrollTop,wy=scrollY;
  const[L,R,G,WKr,GE,RC]=await Promise.all([q(sb.from('leden').select('lidnr,voornaam,achternaam,email,actief,uitschrijfdatum').order('achternaam')),q(sb.from('rechten').select('*')),q(sb.from('groepen').select('naam').order('naam')),q(sb.from('wijken').select('*')),q(sb.from('genres').select('*').order('naam')),q(sb.from('relatie_categorieen').select('*').order('naam'))]);
  const rm=Object.fromEntries(R.map(r=>[r.email.toLowerCase(),r.rechten])),RT=[['leden','Leden'],['donateurs','Donateurs'],['muziek','Muziek'],['relaties','Relaties'],['beheer','Beheer']];
  const act=L.filter(cur);
- main.innerHTML=`<h1>Beheer</h1><details open><summary>Gebruikers en rechten</summary><table><tr><th>Naam<th>E-mail${RT.map(r=>`<th>${r[1]}`).join('')}<th></tr>${act.map(x=>{const em=(x.email||'').toLowerCase();return `<tr><td>${e(x.achternaam)}, ${e(x.voornaam)}<td>${e(x.email)||'<i>geen e-mail: kan niet inloggen</i>'}${RT.map(r=>`<td>${em?`<input type=checkbox data-e="${e(em)}" data-r=${r[0]} ${(rm[em]||[]).includes(r[0])?'checked':''}>`:''}`).join('')}<td>${em?`<button class=s data-reset="${e(em)}">Reset wachtwoord</button>`:''}`}).join('')}</table></details>
+ main.innerHTML=`<h1>Beheer</h1><details><summary>Gebruikers en rechten</summary><table><tr><th>Naam<th>E-mail${RT.map(r=>`<th>${r[1]}`).join('')}<th></tr>${act.map(x=>{const em=(x.email||'').toLowerCase();return `<tr><td>${e(x.achternaam)}, ${e(x.voornaam)}<td>${e(x.email)||'<i>geen e-mail: kan niet inloggen</i>'}${RT.map(r=>`<td>${em?`<input type=checkbox data-e="${e(em)}" data-r=${r[0]} ${(rm[em]||[]).includes(r[0])?'checked':''}>`:''}`).join('')}<td>${em?`<button class=s data-reset="${e(em)}">Reset wachtwoord</button>`:''}`}).join('')}</table></details>
  <details><summary>Groepen</summary><div id=gr></div><p><button id=ga>Groep toevoegen</button></p></details>
  <details><summary>Genres (muziekbibliotheek)</summary><div id=ge></div><p><button id=gea>Genre toevoegen</button></p></details>
  <details><summary>Uitgeverijen (muziekbibliotheek)</summary><p><button id=ue>Uitgeverijen beheren</button></p></details>
@@ -312,6 +315,7 @@ async function vBeheer(){
  <details><summary>Wijken en wijklopers</summary><div id=wk></div><p><button id=wa>Wijk toevoegen</button></p></details>
  <details><summary>Historie verwerken</summary><div id=hv></div></details>
  <details><summary>Gegevens downloaden (CSV)</summary><p class=sm>Elk bestand wordt apart gedownload en opent direct in Excel.</p><p class=bar><button class=s data-dl=l>Leden</button><button class=s data-dl=d>Donateurs (incl. historie)</button><button class=s data-dl=m>Muziekbibliotheek</button><button class=s data-dl=r>Relaties</button></p></details>`;
+ main.querySelectorAll('summary').forEach(s=>{if(was.includes(s.textContent))s.parentElement.open=true});main.scrollTop=sy;scrollTo(0,wy);
  const inp=[...main.querySelectorAll('input[data-e]')];
  inp.forEach(c=>c.onchange=async()=>{const em=c.dataset.e,set=inp.filter(x=>x.dataset.e==em&&x.checked).map(x=>x.dataset.r);try{await q(sb.from('rechten').upsert({email:em,rechten:set}));toast('Rechten opgeslagen')}catch(er){toast(er.message,1)}});
  main.querySelectorAll('[data-reset]').forEach(b=>b.onclick=async()=>{if(!confirm('Wachtwoord van '+b.dataset.reset+' resetten? Deze persoon moet een nieuw wachtwoord aanmaken.'))return;try{await q(sb.rpc('admin_reset_wachtwoord',{p_email:b.dataset.reset}));toast('Reset uitgevoerd. Laat de gebruiker "Eerste keer" gebruiken.')}catch(er){toast(er.message,1)}});
