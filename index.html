@@ -151,6 +151,8 @@ async function vDon(){
  const[D,H,L,WR]=await Promise.all([q(sb.from('donateurs').select('*').order('wijknr').order('adres').order('huisnr')),q(sb.from('donatie_historie').select('*').order('jaar',{ascending:false})),q(sb.rpc('lidnamen')),q(sb.from('wijken').select('*'))]);
  const WK=Object.fromEntries(WR.map(x=>[x.wijknr,x.wijkloper])),W=WR.map(x=>x.wijknr).sort((a,b)=>String(a).localeCompare(String(b),'nl',{numeric:true}));
  const nm=Object.fromEntries(L.map(x=>[x.lidnr,x.voornaam+' '+x.achternaam]));
+ // volgorde: wijknummer als getal (1,2,3…11), daarna straat, oneven/even en huisnummer; adressen zonder wijk onderaan
+ D.sort((a,b)=>((a.wijknr==null)-(b.wijknr==null))||String(a.wijknr).localeCompare(String(b.wijknr),'nl',{numeric:true})||dcmp(a,b));
  const LH={};H.forEach(x=>{if(!LH[x.donateur_id]||x.jaar>LH[x.donateur_id].jaar)LH[x.donateur_id]=x}); // laatst bekende jaar per donateur
  const F=[['naam1','Naamregel 1*','text'],['naam2','Naamregel 2','text'],['adres','Adres*','text'],['huisnr','Huisnummer*','number'],['toevoeging','Toevoeging huisnummer','text'],['postcode','Postcode','text'],['woonplaats','Woonplaats','text'],['bijdrage','Donateursbijdrage (€)','number',null,'Leeg laten = geen donateur op dit adres'],['lage_bijdrage','Gift','bool'],['wijknr','Wijknummer*','sel',W,'Wijken en wijklopers beheer je onder Beheer'],['mededelingen','Mededelingen','area'],['hist','Historie: betaalde bijdrage per jaar','hist']];
  const open=r=>form(r?'Donateur bewerken':'Nieuwe donateur',F,r?{...r,hist:H.filter(h=>h.donateur_id==r.id)}:{hist:[],bijdrage:10},async o=>{
@@ -160,7 +162,7 @@ async function vDon(){
   if(h.length)await q(sb.from('donatie_historie').insert(h.map(x=>({donateur_id:id,jaar:x.jaar,bedrag:x.bedrag,betaalwijze:x.betaalwijze}))));
   vDon()},r&&(async()=>{await q(sb.from('donateurs').delete().eq('id',r.id));vDon()}),'Let op: ook de volledige historie van deze donateur wordt verwijderd. Is de donateur gestopt? Maak dan het veld Donateursbijdrage leeg, dan blijft de historie bewaard. Toch verwijderen?');
  main.innerHTML=head('Donateurs','Nieuwe donateur');$('#n').onclick=()=>open();
- list(D,[['Wijk',r=>r.wijknr],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Laatste bijdrage',r=>{if(!(r.bijdrage>0))return 'geen donateur';const x=LH[r.id];return x?'€ '+Number(x.bedrag??STD).toFixed(2)+' ('+x.jaar+')':'nog niet betaald'}],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
+ list(D,[['Wijk',r=>r.wijknr],['Naam',r=>[r.naam1,r.naam2].filter(Boolean).join(' ')],['Adres',r=>`${r.adres} ${r.huisnr??''}${r.toevoeging||''}`],['Woonplaats',r=>r.woonplaats],['Laatste bijdrage',r=>{if(!(r.bijdrage>0))return 'geen donateur';const x=LH[r.id];return x?'€ '+Number(x.bedrag??STD).toFixed(2)+' ('+x.jaar+')':'nog niet betaald'}],['Wijkloper',r=>(WK[r.wijknr]||[]).map(n=>nm[n]).filter(Boolean).join(', ')]],open);
 }
 
 // ===== Historie verwerken =====
